@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="theme-color" content="#e0e0e0">
+	<!-- !!! Заголовок -->
+	<title>Sleepwalker - Illenium</title>
+	<link rel="stylesheet" href="../../css/style.css">
+	<link rel="icon" sizes="192x192" href="../../icons/high-res.png">
+	<script src="../../js/menuController.js"></script>
+	<script src="../../js/jumpToTopController.js"></script>
+</head>
+<body>
+
+	<button onclick="jumpToTop()" id="toTopButton"></button>
+
+	<header>
+		<div class="header-main-menu">
+			<a href="../../index.html"><span class="header-main-title">Главная страница</span></a>
+			<nav class="header-main-menu-tabs">
+				<a href="../trans.html" class="selected">Переводы и тексты</a>
+			</nav>
+		</div>
+	</header>
+
+	<div id="menu-dropdown-id" class="menu-dropdown">
+		<a href="../../index.html"><span class="header-main-title-media">Главная страница</span></a>
+		<button id="dropdown-button-id" onclick="dropdownController(); changeIcon()" class="dropdown-button"></button>
+		<div id="myDropdown" class="dropdown-content">
+			<nav>
+				<a href="../trans.html">Переводы и тексты</a>
+			</nav>
+		</div>
+	</div>
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">Illenium - Sleepwalker</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-shadow">
+					<!-- !!! Текст -->
+
+					<p>
+						<div class="string-container">Sleepwalker, where do you go</div>
+						<div class="string-container">In the night?</div>
+						<div class="string-container">I find you in my dreams</div>
+						<div class="string-container">I find you in my dreams</div>
+						<div class="string-container">Sleepwalker, visions always</div>
+						<div class="string-container">Just repeat</div>
+						<div class="string-container">You're always in my dreams</div>
+						<div class="string-container">You're always in my dreams</div>
+					</p>
+
+					<p>
+						<div class="string-container">Did you come to make it right?</div>
+						<div class="string-container">Did you come to say goodbye?</div>
+						<div class="string-container">Did you come to make it right?</div>
+						<div class="string-container">Did you come to say goodbye?</div>
+						<div class="string-container">Did you come to say goodbye?</div>
+						<div class="string-container">Did you come to say goodbye?</div>
+						<div class="string-container">Sleepwalker, sleepwalker, sleepwalker</div>
+						<div class="string-container">Where did you go?</div>
+					</p>
+
+					<p>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Sleepwalker, sleepwalker, sleepwalker...</div>
+						<div class="string-container">Where did you go?</div>
+						<div class="string-container">Sleepwalker, sleepwalker, sleepwalker...</div>
+						<div class="string-container">Where did you go?</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Sleepwalker, sleepwalker, sleepwalker...</div>
+						<div class="string-container">Where did you go?</div>
+						<div class="string-container">Where did you go?</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+						<div class="string-container">Now I'm sleepwalking again</div>
+					</p>
+
+					<p>
+						<div class="string-container">Sleepwalker, sleepwalker, sleepwalker...</div>
+					</p>
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+		<p id ="PFooterElement"> / <a href="../../index.html">Ярослав Зинченко</a></p>
+	</footer>
+
+</body>
+</html>
+
+<script src="../../js/editFooter.js"></script>
