@@ -265,6 +265,13 @@ main {
 	font-size: 85%;
 }
 
+.song-with-trans {
+	float: right;
+	vertical-align: middle;
+	padding-left: 40px;
+	opacity: .6;
+}
+
 
 
 
