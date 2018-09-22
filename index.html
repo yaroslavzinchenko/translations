@@ -10,27 +10,24 @@
 		 Так или иначе, нужно проверить на iPhone -->
 	<!-- <meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
-	<title>Ярослав Зинченко</title>
+	<title>Ярослав Зинченко - Переводы и тексты</title>
 	<link rel="stylesheet" href="css/style.css">
 	<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
+	<link rel="icon" sizes="192x192" href="icons/high-res.png">
 	<script src="js/menuController.js"></script>
 	<script src="js/jumpToTopController.js"></script>
-	<link rel="icon" sizes="192x192" href="icons/high-res.png">
 </head>
 <body>
 
 	<button onclick="jumpToTop()" id="toTopButton"></button>
 
 	<header>
-	<div class="header-main-menu">
-
-		<a href="index.html"><span class="header-main-title">Главная страница</span></a>
-
-		<nav class="header-main-menu-tabs">
-			<a href="trans/trans.html">Переводы и тексты</a>
-		</nav>
-
-	</div>
+		<div class="header-main-menu">
+			<a href="index.html"><span class="header-main-title">Главная страница</span></a>
+			<nav class="header-main-menu-tabs">
+				<a href="trans.html" class="selected">Переводы и тексты</a>
+			</nav>
+		</div>
 	</header>
 
 	<div id="menu-dropdown-id" class="menu-dropdown">
@@ -38,13 +35,163 @@
 		<button id="dropdown-button-id" onclick="dropdownController(); changeIcon()" class="dropdown-button"></button>
 		<div id="myDropdown" class="dropdown-content">
 			<nav>
-				<a href="trans/trans.html">Переводы и тексты</a>
+				<a href="trans.html">Переводы и тексты</a>
 			</nav>
 		</div>
 	</div>
 
 	<main>
-		
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<h1 class="translations-header-h1">Переводы и тексты</h1>
+			</header>
+
+			<table class="card-translations-table-translation card-shadow">
+				<thead>
+					<tr>
+						<th>Треки</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					<tr>
+						<td><a href="tracks/attack.html"><span class="song-name">Attack</span> - <span class="song-artist">Thirty Seconds to Mar</sspan></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/connection_through_sound.html"><span class="song-name">Connection Through Sound</span> - <span class="song-artist">Katty Heath</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/fortress.html"><span class="song-name">Fortress</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/fractures.html"><span class="song-name">Fractures</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/free_to_feel_again.html"><span class="song-name">Free To Feel Again</span> - <span class="song-artist">Katty Heath</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/from_hank_to_hendrix.html"><span class="song-name">From Hank To Hendrix</span> - <span class="song-artist">Neil Young</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/halfway_right.html"><span class="song-name">Halfway Right</span> - <span class="song-artist">Linkin Park</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/harvest_moon.html"><span class="song-name">Harvest Moon</span> - <span class="song-artist">Neil Young</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/i_still_havent_found_what_im_looking_for.html"><span class="song-name">I Still Haven't Found What I'm Looking For</span> - <span class="song-artist">U2</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/its_all_on_u.html"><span class="song-name">It's All on U</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/love_sublime.html"><span class="song-name">Love Sublime</span> - <span class="song-artist">Katty Heath</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/let_you_go.html"><span class="song-name">Let You Go</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/new_divide.html"><span class="song-name">New Divide</span> - <span class="song-artist">Linkin Park</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/nightcall.html"><span class="song-name">Nightcall</span> - <span class="song-artist">Lovefoxxx, Kavinsky</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/one_more_light.html"><span class="song-name">One More Light</span> - <span class="song-artist">Linkin Park</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/only_one.html"><span class="song-name">Only One</span> - <span class="song-artist">Illenium feat. Nina Sung</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/painted_white.html"><span class="song-name">Painted White</span> - <span class="song-artist">Illenium & Said The Sky feat. Cristina Soto</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/real_hero.html"><span class="song-name">Real Hero</span> - <span class="song-artist">College feat. Electric Youth</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/reverie.html"><span class="song-name">Reverie</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/sleepwalker.html"><span class="song-name">Sleepwalker</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/sound_of_walking_away.html"><span class="song-name">Sound of Walking Away</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/spirals.html"><span class="song-name">Spirals</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/unknown_legend.html"><span class="song-name">Unknown Legend</span> - <span class="song-artist">Neil Young</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/where_the_streets_have_no_name.html"><span class="song-name">Where the Streets Have No Name</span></span> - <span class="song-artist">U2</a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/with_you.html"><span class="song-name">With You</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/without_you.html"><span class="song-name">Without You</span> - <span class="song-artist">Illenium</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/yours_truely.html"><span class="song-name">Yours Truely</span> - <span class="song-artist">Mr FijiWiji</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/moe_more.html"><span class="song-name">Моё Море</span> - <span class="song-artist">Noize MC</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/ne_mogu_naiti.html"><span class="song-name">Не Могу Найти</span> - <span class="song-artist">Noize MC</span></a></td>
+					</tr>
+
+					<tr>
+						<td><a href="tracks/vydyhai.html"><span class="song-name">Выдыхай</span> - <span class="song-artist">Noize MC</span></a></td>
+					</tr>
+
+				</tbody>
+			</table>
+
+			<table class="card-translations-table-translation card-shadow">
+				<thead>
+					<tr>
+						<th>Игры</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><a href="games/doom/doom.html">DOOM</a></td>
+					</tr>
+				</tbody>
+			</table>
+
+		</section>
 	</main>
 
 	<footer>
