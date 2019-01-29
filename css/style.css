@@ -18,28 +18,6 @@
 
 
 
-/* Шрифты. */
-
-/* Не знаю, почему, но шрифты не подключаются без двоеточия
-   в начале ссылки. При загрузке файлов на сервер нужно
-   будет обязательно проверить, все ли работает */
-
-@font-face  {
-	font-family: Roboto;
-	src: url(../fonts/Roboto/Roboto-Regular.ttf);
-	font-weight: normal;
-}
-
-@font-face {
-	font-family: Roboto;
-	src: url(../fonts/Roboto/Roboto-Bold.ttf);
-	font-weight: bold;
-}
-
-
-
-
-
 /* Тело и основные правила. */
 
 html {
