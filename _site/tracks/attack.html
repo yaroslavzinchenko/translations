@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Используем https://getmdl.io -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
+
+<!-- Кодировка -->
+<meta charset="UTF-8">
+
+<!-- Масштабирование на мобильных устройствах -->
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<!-- Цвет самой верхней панели за пределами браузера на мобильных устройствах (точно работает в Google Chrome для Android) -->
+<meta name="theme-color" content="#e0e0e0">
+
+<!-- Как написано в руководстве, сначала мне необходимо
+	 определить сайт как standalone application.
+	 Тогда после этого я смогу изменить status bar.
+	 Так или иначе, нужно проверить на iPhone -->
+<!-- <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
+
+<!-- Ссылка на CSS -->
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
+
+<link rel="icon" sizes="192x192" href="/assets/images/icons/high-res.png">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
+
+<!-- Page title -->
+<title>Attack - Thirty Seconds to Mars</title>
+
+</head>
+<body>
+
+	<button onclick="jumpToTop()" id="toTopButton"></button>
+
+<header>
+	<div class="header-main-menu">
+		<a href="/"><span class="header-main-title">Главная страница</span></a>
+	</div>
+</header>
+
+<div id="menu-dropdown-id" class="menu-dropdown">
+	<a href="/"><span class="header-main-title-media">Главная страница</span></a>
+</div>
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">Thirty Seconds to Mars - Attack</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-shadow">
+					<!-- !!! Текст -->
+
+					<p>
+	<div class="string-container">I won't suffer, be broken, get tired, or wasted</div>
+	<div class="string-container">Surrender to nothing, I'll give up what I</div>
+	<div class="string-container">Started and stop this, from end to beginning</div>
+	<div class="string-container">A new day is calling, and I am finally free</div>
+	<div class="string-container">Fight!</div>
+</p>
+
+<p>
+	<div class="string-container">Run away, run away, I'll attack</div>
+	<div class="string-container">Run away, run away, go chase yourself</div>
+	<div class="string-container">Run away, run away, now I'll attack</div>
+	<div class="string-container">I'll attack, I'll a, whoa!</div>
+</p>
+
+<p>
+	<div class="string-container">I would have kept you, forever, what we had to sever</div>
+	<div class="string-container">It ended for both of us, faster than a</div>
+	<div class="string-container">Kill off this thinking; it's starting to sink in</div>
+	<div class="string-container">I'm losing control now, and without you I can finally see</div>
+	<div class="string-container">Fight!</div>
+</p>
+
+<p>
+	<div class="string-container">Run away, run away, I'll attack</div>
+	<div class="string-container">Run away, run away, go chase yourself</div>
+	<div class="string-container">Run away, run away, now I'll attack</div>
+	<div class="string-container">I'll attack, I'll a, whoa!</div>
+</p>
+
+<p>
+	<div class="string-container">Your promises, they look like lies</div>
+	<div class="string-container">Your honesty, like a back that hides a knife (knife)</div>
+	<div class="string-container">I promise you (promise you)</div>
+	<div class="string-container">I promise you (promise you)</div>
+	<div class="string-container">And I am finally free</div>
+</p>
+
+<p>
+	<div class="string-container">Run away, run away, I'll attack</div>
+	<div class="string-container">Run away, run away, go chase yourself</div>
+	<div class="string-container">Run away, run away, now I'll attack</div>
+	<div class="string-container">I'll attack, I'll attack, I will attack</div>
+</p>
+
+<p>
+	<div class="string-container">Run away, I'll attack, I will attack</div>
+	<div class="string-container">Run away, I'll attack, I will attack</div>
+	<div class="string-container">Run away, I'll attack, I will attack</div>
+	<div class="string-container">Run away, I'll attack, I'll attack, I'll a, whoa!</div>
+</p>
+
+<p>
+	<div class="string-container">Your promises</div>
+	<div class="string-container">(Promises, promises)</div>
+	<div class="string-container">I promise you</div>
+	<div class="string-container">(Promise you)</div>
+	<div class="string-container">I promise you</div>
+	<div class="string-container">(Promise you, promise you)</div>
+</p>
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+	<p id ="PFooterElement"> / <a href="/">Главная страница</a></p>
+</footer>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="/assets/js/menuController.js"></script>
+<script src="/assets/js/jumpToTopController.js"></script>
+
+</body>
+</html>
+
+<script src="/assets/js/editFooter.js"></script>

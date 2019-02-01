@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% include head-info.html %}
+</head>
+<body>
+
+	{% include header-and-jump-to-top-button.html %}
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">{{page.title-band-song}}</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-image" style="padding: 0 0 0">
+					<!-- !!! Текст -->
+
+					{{ content }}
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	{% include footer.html %}
+
+	{% include bottom-scripts.html %}
+
+</body>
+</html>
+
+{% include edit-footer-script.html %}

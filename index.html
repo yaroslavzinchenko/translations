@@ -1,59 +1,21 @@
+---
+title: Переводы и тексты
+---
+
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- Используем https://getmdl.io -->
-	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-	<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
-
-	<!-- Кодировка -->
-	<meta charset="UTF-8">
-
-	<!-- Масштабирование на мобильных устройствах -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-	<!-- Цвет самой верхней панели за пределами браузера на мобильных устройствах (точно работает в Google Chrome для Android) -->
-	<meta name="theme-color" content="#e0e0e0">
-
-	<!-- Как написано в руководстве, сначала мне необходимо
-		 определить сайт как standalone application.
-		 Тогда после этого я смогу изменить status bar.
-		 Так или иначе, нужно проверить на iPhone -->
-	<!-- <meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
-
-	<!-- Ссылка на CSS -->
-	<link rel="stylesheet" href="css/style.css">
-
-	<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
-
-	<link rel="icon" sizes="192x192" href="icons/high-res.png">
-
-	<!-- Font -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
-
-	<!-- Page title -->
-	<title>Переводы и тексты</title>
+	{% include head-info.html %}
 </head>
 <body>
 
-	<button onclick="jumpToTop()" id="toTopButton"></button>
-
-	<header>
-		<div class="header-main-menu">
-			<a href="index.html"><span class="header-main-title">Главная страница</span></a>
-		</div>
-	</header>
-
-	<div id="menu-dropdown-id" class="menu-dropdown">
-		<a href="index.html"><span class="header-main-title-media">Главная страница</span></a>
-	</div>
+	{% include header-and-jump-to-top-button.html %}
 
 	<main>
 		<section class="translations-section">
 
 			<header class="translations-header">
-				<h1 class="translations-header-h1">Переводы и тексты</h1>
+				<h1 class="translations-header-h1">{{page.title}}</h1>
 			</header>
 
 			<table class="card-translations-table-translation card-shadow">
@@ -157,7 +119,7 @@
 					</tr>
 
 					<tr>
-						<td><a href="tracks/where_the_streets_have_no_name.html"><img src="icons/baseline-translate-24px.svg" alt="" class="song-with-trans"><span class="song-name">Where the Streets Have No Name</span> - <span class="song-artist">U2</a></td>
+						<td><a href="tracks/where_the_streets_have_no_name.html"><img src="/assets/images/icons/baseline-translate-24px.svg" alt="" class="song-with-trans"><span class="song-name">Where the Streets Have No Name</span> - <span class="song-artist">U2</a></td>
 					</tr>
 
 					<tr>
@@ -183,6 +145,11 @@
 					<tr>
 						<td><a href="tracks/vydyhai.html"><span class="song-name">Выдыхай</span> - <span class="song-artist">Noize MC</span></a></td>
 					</tr>
+					
+					<!-- New song template -->
+					<!-- <tr>
+						<td><a href="tracks/SONG-NAME.html"><span class="song-name">SONG-NAME</span> - <span class="song-artist">BAND-NAME</span></a></td>
+					</tr> -->
 
 				</tbody>
 			</table>
@@ -203,15 +170,11 @@
 		</section>
 	</main>
 
-	<footer>
-		<p id ="PFooterElement"> / <a href="index.html">Главная страница</a></p>
-	</footer>
+	{% include footer.html %}
 
-	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-	<script src="js/menuController.js"></script>
-	<script src="js/jumpToTopController.js"></script>
+	{% include bottom-scripts.html %}
 
 </body>
 </html>
 
-<script src="js/editFooter.js"></script>
+{% include edit-footer-script.html %}

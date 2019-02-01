@@ -1,28 +1,15 @@
+---
+title: DOOM. Заветы Палача
+---
+
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<meta name="theme-color" content="#e0e0e0">
-	<title>DOOM. Заветы Палача</title>
-	<link rel="stylesheet" href="../../css/style.css">
-	<link rel="icon" sizes="192x192" href="../../icons/high-res.png">
-	<script src="../../js/menuController.js"></script>
-	<script src="../../js/jumpToTopController.js"></script>
+	{% include head-info.html %}
 </head>
 <body>
 
-	<button onclick="jumpToTop()" id="toTopButton"></button>
-
-	<header>
-	<div class="header-main-menu">
-		<a href="../../index.html"><span class="header-main-title">Главная страница</span></a>
-	</div>
-	</header>
-
-	<div id="menu-dropdown-id" class="menu-dropdown">
-		<a href="../../index.html"><span class="header-main-title-media">Главная страница</span></a>
-	</div>
+	{% include header-and-jump-to-top-button.html %}
 
 	<main>
 		<section class="translations-section">
@@ -150,11 +137,11 @@
 		</section>
 	</main>
 
-	<footer>
-		<p id ="PFooterElement"> / <a href="../../index.html">Главная страница</a></p>
-	</footer>
+	{% include footer.html %}
+
+	{% include bottom-scripts.html %}
 
 </body>
 </html>
 
-<script src="../../js/editFooter.js"></script>
+{% include edit-footer-script.html %}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Используем https://getmdl.io -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
+
+<!-- Кодировка -->
+<meta charset="UTF-8">
+
+<!-- Масштабирование на мобильных устройствах -->
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<!-- Цвет самой верхней панели за пределами браузера на мобильных устройствах (точно работает в Google Chrome для Android) -->
+<meta name="theme-color" content="#e0e0e0">
+
+<!-- Как написано в руководстве, сначала мне необходимо
+	 определить сайт как standalone application.
+	 Тогда после этого я смогу изменить status bar.
+	 Так или иначе, нужно проверить на iPhone -->
+<!-- <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
+
+<!-- Ссылка на CSS -->
+<link rel="stylesheet" href="/assets/css/styles.css">
+
+<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
+
+<link rel="icon" sizes="192x192" href="/assets/images/icons/high-res.png">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
+
+<!-- Page title -->
+<title>One More Light - Linkin Park</title>
+
+</head>
+<body>
+
+	<button onclick="jumpToTop()" id="toTopButton"></button>
+
+<header>
+	<div class="header-main-menu">
+		<a href="/"><span class="header-main-title">Главная страница</span></a>
+	</div>
+</header>
+
+<div id="menu-dropdown-id" class="menu-dropdown">
+	<a href="/"><span class="header-main-title-media">Главная страница</span></a>
+</div>
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">Linkin Park - One More Light</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-shadow">
+					<!-- !!! Текст -->
+
+					<p>
+	<div class="string-container">Should've stayed, were there signs, I ignored?</div>
+	<div class="string-container">Can I help you, not to hurt, anymore?</div>
+	<div class="string-container">We saw brilliance, when the world, was asleep</div>
+	<div class="string-container">There are things we can have, but can't keep</div>
+</p>
+
+<p>
+	<div class="string-container">If they say</div>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">In a sky of a million stars</div>
+	<div class="string-container">It flickers, flickers</div>
+	<div class="string-container">Who cares when someone's time runs out?</div>
+	<div class="string-container">If a moment is all we are</div>
+	<div class="string-container">We're quicker, quicker</div>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">Well I do</div>
+</p>
+
+<p>
+	<div class="string-container">The reminders pull the floor from your feet</div>
+	<div class="string-container">In the kitchen, one more chair than you need oh</div>
+	<div class="string-container">And you're angry, and you should be, it's not fair</div>
+	<div class="string-container">Just 'cause you can't see it, doesn't mean it, isn't there</div>
+</p>
+
+<p>
+	<div class="string-container">If they say</div>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">In a sky of a million stars</div>
+	<div class="string-container">It flickers, flickers</div>
+	<div class="string-container">Who cares when someone's time runs out?</div>
+	<div class="string-container">If a moment is all we are</div>
+	<div class="string-container">We're quicker, quicker</div>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">Well I do</div>
+</p>
+
+<p>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">In a sky of a million stars</div>
+	<div class="string-container">It flickers, flickers</div>
+	<div class="string-container">Who cares when someone's time runs out?</div>
+	<div class="string-container">If a moment is all we are</div>
+	<div class="string-container">We're quicker, quicker</div>
+	<div class="string-container">Who cares if one more light goes out?</div>
+	<div class="string-container">Well I do</div>
+</p>
+
+<p>
+	<div class="string-container">Well I do</div>
+</p>
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+	<p id ="PFooterElement"> / <a href="/">Главная страница</a></p>
+</footer>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="/assets/js/menuController.js"></script>
+<script src="/assets/js/jumpToTopController.js"></script>
+
+</body>
+</html>
+
+<script src="/assets/js/editFooter.js"></script>
