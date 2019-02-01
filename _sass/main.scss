@@ -460,7 +460,7 @@ input:focus + .slider:before {
 
 	/* Dropdown Button. */
 	.dropdown-button {
-		background: url({{site.baseurl}}/assets/images/icons/menu-lines.png) center no-repeat;
+		background: url(/translations/assets/images/icons/menu-lines.png) center no-repeat;
 		background-size: 75%;
 		padding: 32px;
 		margin-right: 24px;
@@ -580,6 +580,6 @@ input:focus + .slider:before {
 }
 
 #toTopButton:after {
-	background: url({{site.baseurl}}/assets/images/icons/ic_expand_less_white_48px.svg) center no-repeat;
+	background: url(/translations/assets/images/icons/ic_expand_less_white_48px.svg) center no-repeat;
 	background-size: 90%;
 }
