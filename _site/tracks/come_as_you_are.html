@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Используем https://getmdl.io -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
+
+<!-- Кодировка -->
+<meta charset="UTF-8">
+
+<!-- Масштабирование на мобильных устройствах -->
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<!-- Цвет самой верхней панели за пределами браузера на мобильных устройствах (точно работает в Google Chrome для Android) -->
+<!-- <meta name="theme-color" content="#e0e0e0"> -->
+<!-- <meta name="theme-color" content="#f5f5f5"> -->
+<meta name="theme-color" content="#EEEEEE">
+
+
+<!-- Как написано в руководстве, сначала мне необходимо
+	 определить сайт как standalone application.
+	 Тогда после этого я смогу изменить status bar.
+	 Так или иначе, нужно проверить на iPhone -->
+<!-- <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
+
+<!-- Ссылка на CSS -->
+<link rel="stylesheet" href="/translations/assets/css/styles.css">
+
+<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
+
+<link rel="icon" sizes="192x192" href="/translations/assets/images/icons/high-res.png">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
+
+<!-- Page title -->
+<title>Come As You Are - Nirvana</title>
+
+</head>
+<body>
+
+	<button onclick="jumpToTop()" id="toTopButton"></button>
+
+<header>
+	<div class="header-main-menu">
+		<a href="/translations/"><span class="header-main-title">Главная страница</span></a>
+	</div>
+</header>
+
+<div id="menu-dropdown-id" class="menu-dropdown">
+	<a href="/translations/"><span class="header-main-title-media">Главная страница</span></a>
+</div>
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">Nirvana - Come As You Are</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-shadow">
+					<!-- !!! Текст -->
+
+					<p>
+	<div class="string-container">Come as you are, as you were</div>
+	<div class="string-container">As I want you to be</div>
+	<div class="string-container">As a friend, as a friend</div>
+	<div class="string-container">As an known enemy</div>
+</p>
+
+<p>
+	<div class="string-container">Take your time, hurry up</div>
+	<div class="string-container">The choice is yours, don't be late</div>
+	<div class="string-container">Take a rest as a friend</div>
+	<div class="string-container">As an old</div>
+</p>
+
+<p>
+	<div class="string-container">Memoria, memoria</div>
+	<div class="string-container">Memoria, memoria</div>
+</p>
+
+<p>
+	<div class="string-container">Come doused in mud, soaked in bleach</div>
+	<div class="string-container">As I want you to be</div>
+	<div class="string-container">As a trend, as a friend</div>
+	<div class="string-container">As an old</div>
+</p>
+
+<p>
+	<div class="string-container">Memoria, memoria</div>
+	<div class="string-container">Memoria, memoria</div>
+</p>
+
+<p>
+	<div class="string-container">And I swear that I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+</p>
+
+<p>
+	<div class="string-container">Memoria, memoria</div>
+	<div class="string-container">Memoria, memoria</div>
+	<div class="string-container">(No I don't have a gun)</div>
+</p>
+
+<p>
+	<div class="string-container">And I swear that I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+	<div class="string-container">No I don't have a gun</div>
+</p>
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+	<p id ="PFooterElement"> / <a href="/translations/">Главная страница</a></p>
+</footer>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="/translations/assets/js/menuController.js"></script>
+<script src="/translations/assets/js/jumpToTopController.js"></script>
+
+</body>
+</html>
+
+<script src="/translations/assets/js/editFooter.js"></script>
