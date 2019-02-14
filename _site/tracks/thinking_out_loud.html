@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Используем https://getmdl.io -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
+
+<!-- Кодировка -->
+<meta charset="UTF-8">
+
+<!-- Масштабирование на мобильных устройствах -->
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<!-- Цвет самой верхней панели за пределами браузера на мобильных устройствах (точно работает в Google Chrome для Android) -->
+<!-- <meta name="theme-color" content="#e0e0e0"> -->
+<!-- <meta name="theme-color" content="#f5f5f5"> -->
+<meta name="theme-color" content="#EEEEEE">
+
+
+<!-- Как написано в руководстве, сначала мне необходимо
+	 определить сайт как standalone application.
+	 Тогда после этого я смогу изменить status bar.
+	 Так или иначе, нужно проверить на iPhone -->
+<!-- <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0"> -->
+
+<!-- Ссылка на CSS -->
+<link rel="stylesheet" href="/translations/assets/css/styles.css">
+
+<!-- <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> -->
+
+<link rel="icon" sizes="192x192" href="/translations/assets/images/icons/high-res.png">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&amp;subset=cyrillic" rel="stylesheet">
+
+<!-- Page title -->
+<title>Thinking Out Loud - Ed Sheeran</title>
+
+</head>
+<body>
+
+	<button onclick="jumpToTop()" id="toTopButton"></button>
+
+<header>
+	<div class="header-main-menu">
+		<a href="/translations/"><span class="header-main-title">Главная страница</span></a>
+	</div>
+</header>
+
+<div id="menu-dropdown-id" class="menu-dropdown">
+	<a href="/translations/"><span class="header-main-title-media">Главная страница</span></a>
+</div>
+
+	<main>
+		<section class="translations-section">
+
+			<header class="translations-header">
+				<!-- !!! Название -->
+				<h1 class="translations-header-h1">Ed Sheeran - Thinking Out Loud</h1>
+			</header>
+			
+			<div id="textWithoutTranslation" style="display: block;">
+				<div class="card-lyrics card-shadow">
+					<!-- !!! Текст -->
+
+					<p>
+	<div class="string-container">When your legs don't work like they used to before</div>
+	<div class="string-container">And I can't sweep you off of your feet</div>
+	<div class="string-container">Will your mouth still remember the taste of my love</div>
+	<div class="string-container">Will your eyes still smile from your cheeks</div>
+</p>
+
+<p>
+	<div class="string-container">And darling I will be loving you 'til we're 70</div>
+	<div class="string-container">And baby my heart could still fall as hard at 23</div>
+	<div class="string-container">And I'm thinking 'bout how people fall in love in mysterious ways</div>
+	<div class="string-container">Maybe just the touch of a hand</div>
+	<div class="string-container">Oh me I fall in love with you every single day</div>
+	<div class="string-container">And I just wanna tell you I am</div>
+</p>
+
+<p>
+	<div class="string-container">So honey now</div>
+	<div class="string-container">Take me into your loving arms</div>
+	<div class="string-container">Kiss me under the light of a thousand stars</div>
+	<div class="string-container">Place your head on my beating heart</div>
+	<div class="string-container">I'm thinking out loud</div>
+	<div class="string-container">Maybe we found love right where we are</div>
+</p>
+
+<p>
+	<div class="string-container">When my hair's all but gone and my memory fades</div>
+	<div class="string-container">And the crowds don't remember my name</div>
+	<div class="string-container">When my hands don't play the strings the same way, mm</div>
+	<div class="string-container">I know you will still love me the same</div>
+</p>
+
+<p>
+	<div class="string-container">'Cause honey your soul can never grow old, it's evergreen</div>
+	<div class="string-container">Baby your smile's forever in my mind and memory</div>
+</p>
+
+
+<p>
+	<div class="string-container">I'm thinking 'bout how people fall in love in mysterious ways</div>
+	<div class="string-container">Maybe it's all part of a plan</div>
+	<div class="string-container">I'll just keep on making the same mistakes</div>
+	<div class="string-container">Hoping that you'll understand</div>
+</p>
+
+<p>
+	<div class="string-container">But baby now</div>
+	<div class="string-container">Take me into your loving arms</div>
+	<div class="string-container">Kiss me under the light of a thousand stars</div>
+	<div class="string-container">Place your head on my beating heart</div>
+	<div class="string-container">I'm thinking out loud</div>
+	<div class="string-container">That maybe we found love right where we are, oh</div>
+</p>
+
+<p>
+	<div class="string-container">So baby now</div>
+	<div class="string-container">Take me into your loving arms</div>
+	<div class="string-container">Kiss me under the light of a thousand stars</div>
+	<div class="string-container">Oh darling, place your head on my beating heart</div>
+	<div class="string-container">I'm thinking out loud</div>
+	<div class="string-container">That maybe we found love right where we are</div>
+</p>
+
+<p>
+	<div class="string-container">Oh maybe we found love right where we are</div>
+	<div class="string-container">And we found love right where we are</div>
+</p>
+
+				</div>
+			</div>
+
+		</section>
+	</main>
+
+	<footer>
+	<p id ="PFooterElement"> / <a href="/translations/">Главная страница</a></p>
+</footer>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+<script src="/translations/assets/js/menuController.js"></script>
+<script src="/translations/assets/js/jumpToTopController.js"></script>
+
+</body>
+</html>
+
+<script src="/translations/assets/js/editFooter.js"></script>
