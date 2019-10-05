@@ -12,3 +12,4 @@ https://yaroslavzinchenko.github.io/translations - Старая версия.
 * CSS (SASS (SCSS))
 * Jekyll
 * Github
+* Github Pages
