@@ -10,7 +10,16 @@ function scrollFunction() {
 }
 
 // When the user clicks on the button, scroll to the top of the document.
-function jumpToTop() {
+// Old version. No animation.
+/*function jumpToTop() {
     document.body.scrollTop = 0; // For Safari.
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera.
+}*/
+
+// When the user clicks on the button, scroll to the top of the document.
+// New jQuery version. With animation.
+function jumpToTop()
+{
+	$('html, body').animate({ scrollTop: 0 }, 'fast');
 }
+
