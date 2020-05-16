@@ -2,18 +2,14 @@
 
 ### Ссылки:
 
-https://yaroslav-zinchenko.000webhostapp.com/translations/ - Новая версия.
-
-https://yaroslavzinchenko.github.io/translations - Старая версия.
-
-### Замечание
-
-Данный репозиторий устарел. Новую версию, указанную выше, обслуживает приватный репозиторий. Если интересен код, свяжитесь со мной.
+https://yaroslav-zinchenko.000webhostapp.com/translations
 
 ### Используемые технологии:
 
 * HTML
 * CSS (SASS (SCSS))
-* Jekyll
+* PHP
+* Laravel
+* MySQL
 * Github
 * Github Pages
