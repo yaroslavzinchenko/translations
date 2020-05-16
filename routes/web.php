@@ -17,8 +17,16 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 });*/
 
-Route::get('/', 'IndexController@index');
+Route::redirect('/', '/tracks');
 
-Route::get('/yosh', function () {
-    return "Yosh";
-});
+Route::get('/tracks', 'TrackController@index');
+
+Route::get('/tracks/add', 'TrackController@add');
+
+Route::get('/artists', 'ArtistController@index');
+
+Route::redirect('/games', '/games/doom');
+
+Route::get('/games/doom', 'GameController@doom');
+
+
