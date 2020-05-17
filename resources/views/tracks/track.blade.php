@@ -1,4 +1,4 @@
-@extends('layouts.mainLayout')
+@extends('layouts.main')
 
 @section('content')
     <section class="translations-section">
@@ -23,10 +23,7 @@
                         $line = rtrim($line);
                     @endphp
                     @if($line == ctype_space($line))
-                        @php
-                            echo '<p>';
-                            echo '</p>';
-                        @endphp
+                            <br>
                         @continue
                     @endif
                     <div class="string-container">{{$line}}</div>

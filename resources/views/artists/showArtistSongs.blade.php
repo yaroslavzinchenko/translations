@@ -10,7 +10,7 @@
         <table class="card-translations-table-translation card-shadow">
             <thead>
             <tr>
-                <th>{{$title}}</th>
+                <th>Треки</th>
             </tr>
             </thead>
             <tbody>

@@ -95,10 +95,8 @@ class TrackController extends Controller
                 $tr .= "</span></a></td></tr>";
             }
 
-
             $trArray [] = $tr;
         }
-
 
         return view('tracks.index', [
             'title' => $title,
@@ -136,6 +134,12 @@ class TrackController extends Controller
             'track' => $track,
             'lyrics' => $lyrics
         ]);
+    }
+
+    public function whereTheStreetsHaveNoNameU2()
+    {
+        $title = 'Where the Streets Have No Name - U2';
+        return view('tracks.whereTheStreetsHaveNoNameU2', ['title' => $title]);
     }
 
     public function add()

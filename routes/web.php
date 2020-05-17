@@ -21,11 +21,15 @@ Route::redirect('/', '/tracks');
 
 Route::get('/tracks', 'TrackController@index');
 
+Route::get('/tracks/34/where_the_streets_have_no_name', 'TrackController@whereTheStreetsHaveNoNameU2');
+
 Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
 
 Route::get('/tracks/add', 'TrackController@add');
 
 Route::get('/artists', 'ArtistController@index');
+
+Route::get('/artists/{artist}', 'ArtistController@showArtistSongs');
 
 Route::redirect('/games', '/games/doom');
 
