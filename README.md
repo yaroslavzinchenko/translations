@@ -7,9 +7,11 @@ https://yaroslav-zinchenko.000webhostapp.com/translations
 ### Используемые технологии:
 
 * HTML
-* CSS (SASS (SCSS))
+* SCSS
 * PHP
 * Laravel
 * MySQL
+* JavaScript
+* jQuery
 * Github
 * Github Pages
