@@ -21,6 +21,8 @@ Route::redirect('/', '/tracks');
 
 Route::get('/tracks', 'TrackController@index');
 
+Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
+
 Route::get('/tracks/add', 'TrackController@add');
 
 Route::get('/artists', 'ArtistController@index');

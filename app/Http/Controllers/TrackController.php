@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TrackController extends Controller
 {
-    public function index()
+    private function getTracks()
     {
-        $title = "Главная страница";
-        $tracks =DB::select('SELECT DISTINCT
+        $tracks = DB::select('SELECT DISTINCT
+                                        id,
                                         track_name,
 										track_name_ru,
 										artist_1,
@@ -22,23 +21,39 @@ class TrackController extends Controller
 							FROM tracks
 							ORDER BY track_name_ru');
 
+        return $tracks;
+    }
+
+    private function getTrack($id)
+    {
+        $track = DB::table('tracks')->where('id', '=', $id)->get();
+        return $track;
+    }
+
+    public function index()
+    {
+        $title = "Главная страница";
+
+        $tracks = $this->getTracks();
+
         $trArray = [];
         foreach($tracks as $track)
         {
+            $id = $track->id;
             $track_name = $track->track_name;
-            $artist_1 = $track->artist_1;
 
             if ($track_name == 'Where the Streets Have No Name' && $artist_1 = 'U2')
             {
                 $tr = "<tr>
-						<td><a href='/tracks/where_the_streets_have_no_name.php'><img src='/images/icons/baseline-translate-24px.svg' alt='' class='song-with-trans'><span class='song-name'>Where the Streets Have No Name</span> - <span class='song-artist'>U2</a></td>
+						<td><a href='/tracks/34/where_the_streets_have_no_name'><img src='/images/icons/baseline-translate-24px.svg' alt='' class='song-with-trans'><span class='song-name'>Where the Streets Have No Name</span> - <span class='song-artist'>U2</a></td>
 					</tr>";
             }
             else
             {
                 $track_name = strtolower($track_name);
-                $tr = "<tr><td><a href='tracks/" . str_replace(' ', '_', str_replace("'", "", $track_name)) . ".php'>";
+                $tr = "<tr><td><a href='tracks/" . $id . "/" . str_replace(' ', '_', str_replace("'", "", $track_name)) . "'>";
                 $tr .= "<span class='song-name'>";
+
                 if ($track->track_name_ru)
                 {
                     $tr .= $track->track_name_ru;
@@ -58,6 +73,7 @@ class TrackController extends Controller
                 {
                     $tr .= $track->artist_1;
                 }
+
                 if ($track->artist_2_ru and $track->artist_2_ru !== null)
                 {
                     $tr .= ', ' . $track->artist_2_ru;
@@ -66,6 +82,7 @@ class TrackController extends Controller
                 {
                     $tr .= ', ' . $track->artist_2;
                 }
+
                 if ($track->artist_3_ru and $track->artist_3_ru !== null)
                 {
                     $tr .= ', ' . $track->artist_3_ru;
@@ -87,6 +104,38 @@ class TrackController extends Controller
             'title' => $title,
             'trArray' => $trArray]
         );
+    }
+
+    public function showTrack($id, $track_name)
+    {
+        $track = $this->getTrack($id);
+        $track = $track[0];
+        $track_name = str_replace('.php', '', $track_name);
+        $track_name = str_replace('_', ' ', $track_name);
+        $track_name = ucwords($track_name);
+        $lyrics = explode("\n", $track->lyrics);
+
+        if (!empty($track->artist_2_ru))
+        {
+            if (!empty($track->artist_3_ru))
+            {
+                $title = $track_name . ' - ' . $track->artist_1_ru . ', ' . $track->artist_2_ru . ', ' . $track->artist_3_ru;
+            }
+            else
+            {
+                $title = $track_name . ' - ' . $track->artist_1_ru . ', ' . $track->artist_2_ru;
+            }
+        }
+        else
+        {
+            $title = $track_name . ' - ' . $track->artist_1_ru;
+        }
+
+        return view('tracks.track', [
+            'title' => $title,
+            'track' => $track,
+            'lyrics' => $lyrics
+        ]);
     }
 
     public function add()
