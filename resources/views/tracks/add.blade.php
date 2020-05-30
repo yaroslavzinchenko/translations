@@ -62,8 +62,22 @@
                     @endforeach
                 </select>
             </div>
-            <div class="form-group">
-                <label for="lyrics">Стихи</label>
+            Картинка вместо текста
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_no" value="image_for_lyrics_no" checked>
+                <label class="form-check-label" for="image_for_lyrics_no">
+                    Нет
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_yes" value="image_for_lyrics_yes">
+                <label class="form-check-label" for="image_for_lyrics_yes">
+                    Да
+                </label>
+            </div>
+            <br>
+            <div class="form-group lyrics_div" id="lyrics_div">
+                <label for="lyrics">Текст</label>
                 <textarea name="lyrics" id="lyrics" class="form-control" rows="20" required onkeyup='saveValue(this);'></textarea>
             </div>
             <div class="form-group">
