@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\ArtistController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TrackController extends Controller
 {
-    private function getTracks()
+    public function getTracks()
     {
-        $tracks = DB::select('SELECT DISTINCT
-                                        id,
-                                        track_name,
-										track_name_ru,
-										artist_1,
-										artist_1_ru,
-										artist_2,
-										artist_2_ru,
-										artist_3,
-										artist_3_ru
-							FROM tracks
-							ORDER BY track_name_ru');
+        $tracks = DB::select('
+                                    SELECT * FROM TRACKS
+                                    ORDER BY TRACK_NAME_RU
+                                    ');
 
         return $tracks;
     }
 
-    private function getTrack($id)
+    private function getTrack($trackId)
     {
-        $track = DB::table('tracks')->where('id', '=', $id)->get();
+        $track = DB::table('tracks')->where('id', '=', $trackId)->get();
         return $track;
+    }
+
+    private function getArtistById($artistId)
+    {
+        $artist = DB::select("SELECT * FROM ARTISTS WHERE ID = " . $artistId);
+        return $artist[0];
     }
 
     public function index()
@@ -35,14 +35,35 @@ class TrackController extends Controller
         $title = "Главная страница";
 
         $tracks = $this->getTracks();
-
         $trArray = [];
+
         foreach($tracks as $track)
         {
-            $id = $track->id;
-            $track_name = $track->track_name;
+            if ($track->artist_1 != NULL)
+            {
+                $artist1 = $this->getArtistById($track->artist_1);
+            }
+            if ($track->artist_2 != NULL)
+            {
+                $artist2 = $this->getArtistById($track->artist_2);
+            }
+            else
+            {
+                $artist2 = NULL;
+            }
+            if ($track->artist_3 != NULL)
+            {
+                $artist3 = $this->getArtistById($track->artist_3);
+            }
+            else
+            {
+                $artist3 = NULL;
+            }
 
-            if ($track_name == 'Where the Streets Have No Name' && $artist_1 = 'U2')
+            $trackId = $track->id;
+            $track_name_en = $track->track_name_en;
+
+            if ($track_name_en == 'Where the Streets Have No Name' && $artist_1 = 'U2')
             {
                 $tr = "<tr>
 						<td><a href='/tracks/34/where_the_streets_have_no_name'><img src='/images/icons/baseline-translate-24px.svg' alt='' class='song-with-trans'><span class='song-name'>Where the Streets Have No Name</span> - <span class='song-artist'>U2</a></td>
@@ -50,8 +71,8 @@ class TrackController extends Controller
             }
             else
             {
-                $track_name = strtolower($track_name);
-                $tr = "<tr><td><a href='tracks/" . $id . "/" . str_replace(' ', '_', str_replace("'", "", $track_name)) . "'>";
+                $track_name_en = strtolower($track_name_en);
+                $tr = "<tr><td><a href='tracks/" . $trackId . "/" . str_replace(' ', '_', str_replace("'", "", $track_name_en)) . "'>";
                 $tr .= "<span class='song-name'>";
 
                 if ($track->track_name_ru)
@@ -60,36 +81,34 @@ class TrackController extends Controller
                 }
                 else
                 {
-                    $tr .= $track->track_name;
+                    $tr .= $track->track_name_en;
                 }
 
                 $tr .= "</span> - <span class='song-artist'>";
 
-                if ($track->artist_1_ru)
+                if (!empty($artist1->artist_ru))
                 {
-                    $tr .= $track->artist_1_ru;
+                    $tr .= $artist1->artist_ru;
                 }
                 else
                 {
-                    $tr .= $track->artist_1;
+                    $tr .= $artist1->artist_en;
                 }
-
-                if ($track->artist_2_ru and $track->artist_2_ru !== null)
+                if (!empty($artist2->artist_ru))
                 {
-                    $tr .= ', ' . $track->artist_2_ru;
+                    $tr .= ', ' . $artist2->artist_ru;
                 }
-                else if ($track->artist_2 and $track->artist_2 !== null)
+                else if (!empty($artist2->artist_en))
                 {
-                    $tr .= ', ' . $track->artist_2;
+                    $tr .= ', ' . $artist2->artist_en;
                 }
-
-                if ($track->artist_3_ru and $track->artist_3_ru !== null)
+                if (!empty($artist3->artist_ru))
                 {
-                    $tr .= ', ' . $track->artist_3_ru;
+                    $tr .= ', ' . $artist3->artist_ru;
                 }
-                else if ($track->artist_3 and $track->artist_3 !== null)
+                else if (!empty($artist3->artist_en))
                 {
-                    $tr .= ', ' . $track->artist_3;
+                    $tr .= ', ' . $artist3->artist_en;
                 }
 
                 $tr .= "</span></a></td></tr>";
@@ -104,36 +123,119 @@ class TrackController extends Controller
         );
     }
 
-    public function showTrack($id, $track_name)
+    public function showTrack($trackId, $track_name_en)
     {
-        $track = $this->getTrack($id);
+        $track = $this->getTrack($trackId);
         $track = $track[0];
-        $track_name = str_replace('.php', '', $track_name);
-        $track_name = str_replace('_', ' ', $track_name);
-        $track_name = ucwords($track_name);
+        if ($track->imageLyrics == 1)
+        {
+            $imageLink = "/images/songs/" . $track_name_en . ".jpg";
+        }
+        else
+        {
+            $imageLink = null;
+        }
+        $track_name_en = str_replace('.php', '', $track_name_en);
+        $track_name_en = str_replace('_', ' ', $track_name_en);
+        $track_name_en = ucwords($track_name_en);
         $lyrics = explode("\n", $track->lyrics);
 
-        if (!empty($track->artist_2_ru))
+        if ($track->artist_1 != NULL)
         {
-            if (!empty($track->artist_3_ru))
+            $artist1 = $this->getArtistById($track->artist_1);
+        }
+        if ($track->artist_2 != NULL)
+        {
+            $artist2 = $this->getArtistById($track->artist_2);
+        }
+        if ($track->artist_3 != NULL)
+        {
+            $artist3 = $this->getArtistById($track->artist_3);
+        }
+
+        if (!empty($artist2->artist_ru))
+        {
+            if (!empty($artist3->artist_ru))
             {
-                $title = $track_name . ' - ' . $track->artist_1_ru . ', ' . $track->artist_2_ru . ', ' . $track->artist_3_ru;
+                $title = $track_name_en . ' - ' . $artist1->artist_ru . ', ' . $artist2->artist_ru . ', ' . $artist3->artist_ru;
             }
             else
             {
-                $title = $track_name . ' - ' . $track->artist_1_ru . ', ' . $track->artist_2_ru;
+                $title = $track_name_en . ' - ' . $artist1->artist_ru . ', ' . $artist2->artist_ru;
             }
         }
         else
         {
-            $title = $track_name . ' - ' . $track->artist_1_ru;
+            $title = $track_name_en . ' - ' . $artist1->artist_ru;
         }
 
-        return view('tracks.track', [
-            'title' => $title,
-            'track' => $track,
-            'lyrics' => $lyrics
-        ]);
+        if ($track->imageLyrics)
+        {
+            if (!empty($artist2) and !empty($artist3))
+            {
+                return view('tracks.trackImageLyrics', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'artist2' => $artist2,
+                    'artist3' => $artist3,
+                    'imageLink' => $imageLink
+                ]);
+            }
+            else if (!empty($artist2))
+            {
+                return view('tracks.trackImageLyrics', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'artist2' => $artist2,
+                    'imageLink' => $imageLink
+                ]);
+            }
+            else
+            {
+                return view('tracks.trackImageLyrics', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'imageLink' => $imageLink
+                ]);
+            }
+        }
+        else
+        {
+            if (!empty($artist2) and !empty($artist3))
+            {
+                return view('tracks.track', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'artist2' => $artist2,
+                    'artist3' => $artist3,
+                    'lyrics' => $lyrics
+                ]);
+            }
+            else if (!empty($artist2))
+            {
+                return view('tracks.track', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'artist2' => $artist2,
+                    'lyrics' => $lyrics
+                ]);
+            }
+            else
+            {
+                return view('tracks.track', [
+                    'title' => $title,
+                    'track' => $track,
+                    'artist1' => $artist1,
+                    'lyrics' => $lyrics
+                ]);
+            }
+        }
+
     }
 
     public function whereTheStreetsHaveNoNameU2()
@@ -142,9 +244,163 @@ class TrackController extends Controller
         return view('tracks.whereTheStreetsHaveNoNameU2', ['title' => $title]);
     }
 
-    public function add()
+    public function add(Request $request)
     {
         $title = "Добавить трек";
-        return view('tracks.add', ['title' => $title]);
+
+        $artists = (new ArtistController())->getArtists();
+
+        if ($request->isMethod('get'))
+        {
+            $msg = '';
+            $msgClass = '';
+
+            return view('tracks.add', [
+                'title' => $title,
+                'artists' => $artists,
+                'msg' => $msg,
+                'msgClass' => $msgClass
+            ]);
+        }
+        else if ($request->isMethod('post'))
+        {
+            $this->validate($request, [
+                'track_name_en' => 'required',
+                'artist_1' => 'required',
+                'lyrics' => 'required'
+            ]);
+
+            // Проверяем, не пусты ли необходимые поля.
+            if (!empty($request['track_name_en']) and !empty($request['artist_1']) and !empty($request['lyrics']))
+            {
+                $track_name_en = $request['track_name_en'];
+                $artist_1 = $request['artist_1'];
+                $lyrics = $request['lyrics'];
+                if (empty($request['artist_2']))
+                {
+                    $artist_2 = NULL;
+                }
+                else
+                {
+                    $artist_2 = $request['artist_2'];
+                }
+                if (empty($request['artist_3']))
+                {
+                    $artist_3 = NULL;
+                }
+                else
+                {
+                    $artist_3 = $request['artist_3'];
+                }
+                if (empty($request['spotify_link']))
+                {
+                    $spotify_link = NULL;
+                }
+                else
+                {
+                    $spotify_link = $request['spotify_link'];
+                }
+                if (empty($request['youtube_link']))
+                {
+                    $youtube_link = NULL;
+                }
+                else
+                {
+                    $youtube_link = $request['youtube_link'];
+                }
+
+                if (!empty($request['track_name_ru']))
+                {
+                    $track_name_ru = $request['track_name_ru'];
+                }
+                else
+                {
+                    $track_name_ru = $track_name_en;
+                }
+
+                // Смотрим, есть ли такой трек с исполнителями.
+                $noMatches = true;
+                $tracks = (new TrackController())->getTracks();
+                foreach($tracks as $track)
+                {
+                    if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_1 and $artist_2 == $track->artist_2 and $artist_3 == $track->artist_3)
+                    {
+                        $noMatches = false;
+                    }
+                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_1 and $artist_2 == $track->artist_3 and $artist_3 == $track->artist_2)
+                    {
+                        $noMatches = false;
+                    }
+                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_2 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_3)
+                    {
+                        $noMatches = false;
+                    }
+                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_3 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_1)
+                    {
+                        $noMatches = false;
+                    }
+                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_2 and $artist_2 == $track->artist_3 and $artist_3 == $track->artist_1)
+                    {
+                        $noMatches = false;
+                    }
+                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_3 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_1)
+                    {
+                        $noMatches = false;
+                    }
+                    if ($spotify_link != NULL and $spotify_link == $track->spotify_link)
+                    {
+                        $noMatches = false;
+                        $msg = 'Такая Spotify ссылка уже есть в базе';
+                    }
+                    if ($youtube_link != NULL and $youtube_link == $track->youtube_link)
+                    {
+                        $noMatches = false;
+                        $msg = 'Такая YouTube ссылка уже есть в базе';
+                    }
+                }
+
+                if ($noMatches)
+                {
+                    DB::table('tracks')->insert(
+                        [
+                            'track_name_en' => $track_name_en,
+                            'track_name_ru' => $track_name_ru,
+                            'artist_1' => $artist_1,
+                            'artist_2' => $artist_2,
+                            'artist_3' => $artist_3,
+                            'lyrics' => $lyrics,
+                            'spotify_link' => $spotify_link,
+                            'youtube_link' => $youtube_link
+                        ]
+                    );
+
+                    $msg = 'Трек добавлен';
+                    $msgClass = 'alert-success';
+
+                    return view('tracks.add', [
+                        'title' => $title,
+                        'artists' => $artists,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+                else
+                {
+                    if (empty($msg))
+                    {
+                        $msg = 'Такая запись уже есть в базе';
+                    }
+                    $msgClass = 'alert-danger';
+
+                    return view('tracks.add', [
+                        'title' => $title,
+                        'artists' => $artists,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+            }
+        }
+
     }
 }

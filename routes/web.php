@@ -25,11 +25,18 @@ Route::get('/tracks/34/where_the_streets_have_no_name', 'TrackController@whereTh
 
 Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
 
-Route::get('/tracks/add', 'TrackController@add');
-
 Route::get('/artists', 'ArtistController@index');
 
-Route::get('/artists/{artist}', 'ArtistController@showArtistSongs');
+Route::get('/artists/{artistId}/{artist}', 'ArtistController@showArtistSongs');
+
+
+// Edit.
+
+Route::get('/edit', 'EditController@index');
+
+Route::match(['get', 'post'], '/artists/add', 'ArtistController@add');
+
+Route::match(['get', 'post'], '/tracks/add', 'TrackController@add');
 
 Route::redirect('/games', '/games/doom');
 
