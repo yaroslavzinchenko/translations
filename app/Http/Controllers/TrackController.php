@@ -11,7 +11,8 @@ class TrackController extends Controller
     public function getTracks()
     {
         $tracks = DB::select('
-                                    SELECT * FROM TRACKS
+                                    SELECT *
+                                    FROM TRACKS
                                     ORDER BY TRACK_NAME_RU
                                     ');
 
@@ -318,35 +319,57 @@ class TrackController extends Controller
                     $track_name_ru = $track_name_en;
                 }
 
-                // Смотрим, есть ли такой трек с исполнителями.
+                // Проверяем, есть ли такой трек с исполнителями.
                 $noMatches = true;
                 $tracks = (new TrackController())->getTracks();
                 foreach($tracks as $track)
                 {
-                    if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_1 and $artist_2 == $track->artist_2 and $artist_3 == $track->artist_3)
+                    if ($artist_2 != NULL AND $artist_3 != NULL)
                     {
-                        $noMatches = false;
+                        if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_1 or $artist_2 == $track->artist_2 or $artist_3 == $track->artist_3) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_1 or $artist_2 == $track->artist_3 or $artist_3 == $track->artist_2) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_2 or $artist_2 == $track->artist_1 or $artist_3 == $track->artist_3) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_3 or $artist_2 == $track->artist_1 or $artist_3 == $track->artist_1) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_2 or $artist_2 == $track->artist_3 or $artist_3 == $track->artist_1) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_3 or $artist_2 == $track->artist_1 or $artist_3 == $track->artist_1) )
+                        {
+                            $noMatches = false;
+                        }
                     }
-                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_1 and $artist_2 == $track->artist_3 and $artist_3 == $track->artist_2)
+                    else if ($artist_2 != NULL and $artist_3 == NULL)
                     {
-                        $noMatches = false;
+                        if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_1 or $artist_2 == $track->artist_2) )
+                        {
+                            $noMatches = false;
+                        }
+                        else if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_2 or $artist_2 == $track->artist_1) )
+                        {
+                            $noMatches = false;
+                        }
                     }
-                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_2 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_3)
+                    else if ($artist_2 == NULL and $artist_3 == NULL)
                     {
-                        $noMatches = false;
+                        if ( (strtoupper($track_name_en) == strtoupper($track->track_name_en) or strtoupper($track_name_ru) == strtoupper($track->track_name_ru)) AND ($artist_1 == $track->artist_1) )
+                        {
+                            $noMatches = false;
+                        }
                     }
-                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_3 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_1)
-                    {
-                        $noMatches = false;
-                    }
-                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_2 and $artist_2 == $track->artist_3 and $artist_3 == $track->artist_1)
-                    {
-                        $noMatches = false;
-                    }
-                    else if ($track_name_en == $track->track_name_en and $artist_1 == $track->artist_3 and $artist_2 == $track->artist_1 and $artist_3 == $track->artist_1)
-                    {
-                        $noMatches = false;
-                    }
+
                     if ($spotify_link != NULL and $spotify_link == $track->spotify_link)
                     {
                         $noMatches = false;

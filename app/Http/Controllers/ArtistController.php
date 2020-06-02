@@ -10,7 +10,10 @@ class ArtistController extends Controller
     public function getArtists()
     {
         $artists = DB::select('
-                            SELECT * FROM ARTISTS ORDER BY ARTIST_RU
+                            SELECT id,
+                            artist_en,
+                            artist_ru
+                            FROM ARTISTS ORDER BY ARTIST_RU
                             ');
 
         return $artists;
@@ -184,11 +187,11 @@ class ArtistController extends Controller
                 $artists = (new ArtistController())->getArtists();
                 foreach($artists as $artist)
                 {
-                    if ($artist_ru == $artist->artist_ru or $artist_ru == $artist->artist_en)
+                    if (strtoupper($artist_ru) == strtoupper($artist->artist_ru) or strtoupper($artist_ru) == strtoupper($artist->artist_en))
                     {
                         $noMatches = false;
                     }
-                    else if ($artist_en == $artist->artist_ru or $artist_en == $artist->artist_en)
+                    else if (strtoupper($artist_en) == strtoupper($artist->artist_ru) or strtoupper($artist_en) == strtoupper($artist->artist_en))
                     {
                         $noMatches = false;
                     }
