@@ -19,7 +19,27 @@ class TrackController extends Controller
         return $tracks;
     }
 
-    private function getTrack($trackId)
+    public function getTracksWithArtistNames()
+    {
+        $tracks = DB::select
+        ('
+            WITH T1 AS (
+            SELECT ID AS ARTIST_ID,
+            artist_en,
+            artist_ru,
+            add_time
+            FROM ARTISTS
+            ),
+            T2 AS (SELECT * FROM TRACKS)
+            SELECT * FROM T2
+            INNER JOIN T1
+            ON T2.ARTIST_1 = T1.ARTIST_ID'
+        );
+
+        return $tracks;
+    }
+
+    private function getTrackById($trackId)
     {
         $track = DB::table('tracks')->where('id', '=', $trackId)->get();
         return $track;
@@ -126,7 +146,7 @@ class TrackController extends Controller
 
     public function showTrack($trackId, $track_name_en)
     {
-        $track = $this->getTrack($trackId);
+        $track = $this->getTrackById($trackId);
         $track = $track[0];
         if ($track->imageLyrics == 1)
         {
@@ -424,6 +444,85 @@ class TrackController extends Controller
                 }
             }
         }
+    }
 
+    public function delete(Request $request)
+    {
+        $title = 'Удалить трек';
+
+        if ($request->isMethod('get'))
+        {
+            $msg = '';
+            $msgClass = '';
+
+            return view('tracks.delete', [
+                'title' => $title,
+                'tracks' => $this->getTracksWithArtistNames(),
+                'msg' => $msg,
+                'msgClass' => $msgClass
+            ]);
+        }
+        else if ($request->isMethod('delete'))
+        {
+            $this->validate($request, [
+                'track_id' => 'required',
+            ]);
+
+            if (!empty($request['track_id']))
+            {
+                $trackId = $request['track_id'];
+                // Смотрим, есть ли трек, который пытаемся удалить, в таблице tracks.
+                $trackExists = false;
+                $tracks = $this->getTracks();
+                foreach($tracks as $track)
+                {
+                    if ($trackId == $track->id) $trackExists = true;
+                    else continue;
+                }
+
+                if ($trackExists)
+                {
+                    // Возвращает количество затронутых строк.
+                    $deleted = DB::delete('delete from tracks where id = :id', ['id' => $trackId]);
+
+                    if($deleted >= 1)
+                    {
+                        $msg = 'Запись удалена';
+                        $msgClass = 'alert-success';
+
+                        return view('tracks.delete', [
+                            'title' => $title,
+                            'tracks' => $this->getTracksWithArtistNames(),
+                            'msg' => $msg,
+                            'msgClass' => $msgClass
+                        ]);
+                    }
+                    else
+                    {
+                        $msg = 'Не удалось удалить трек';
+                        $msgClass = 'alert-danger';
+
+                        return view('tracks.delete', [
+                            'title' => $title,
+                            'tracks' => $this->getTracksWithArtistNames(),
+                            'msg' => $msg,
+                            'msgClass' => $msgClass
+                        ]);
+                    }
+                }
+                else
+                {
+                    $msg = 'Такого трека нет в базе';
+                    $msgClass = 'alert-danger';
+
+                    return view('tracks.delete', [
+                        'title' => $title,
+                        'tracks' => $this->getTracksWithArtistNames(),
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+            }
+        }
     }
 }

@@ -46,4 +46,6 @@ Route::get('/games/doom', 'GameController@doom');
 
 Route::match(['get', 'delete'], '/artists/delete/', 'ArtistController@delete');
 
+Route::match(['get', 'delete'], '/tracks/delete/', 'TrackController@delete');
+
 

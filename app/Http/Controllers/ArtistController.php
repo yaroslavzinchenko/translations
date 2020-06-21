@@ -19,7 +19,7 @@ class ArtistController extends Controller
         return $artists;
     }
 
-    private function getArtistTracksById($artistId)
+    public function getArtistTracksById($artistId)
     {
         $artistTracks = DB::select("
                                 SELECT * FROM TRACKS
@@ -310,7 +310,7 @@ class ArtistController extends Controller
 
                         if($deleted >= 1)
                         {
-                            $msg = $deleted;
+                            $msg = 'Запись удалена';
                             $msgClass = 'alert-success';
 
                             return view('artists.delete', [
@@ -322,8 +322,8 @@ class ArtistController extends Controller
                         }
                         else
                         {
-                            $msg = $deleted;
-                            $msgClass = 'alert-success';
+                            $msg = 'Не удалось удалить трек';
+                            $msgClass = 'alert-danger';
 
                             return view('artists.delete', [
                                 'title' => $title,
