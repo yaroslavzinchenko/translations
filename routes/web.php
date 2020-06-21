@@ -42,4 +42,8 @@ Route::redirect('/games', '/games/doom');
 
 Route::get('/games/doom', 'GameController@doom');
 
+// Delete.
+
+Route::match(['get', 'delete'], '/artists/delete/', 'ArtistController@delete');
+
 

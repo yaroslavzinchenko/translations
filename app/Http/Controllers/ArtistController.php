@@ -19,10 +19,8 @@ class ArtistController extends Controller
         return $artists;
     }
 
-    private function getArtistTracks($artistId, $artist)
+    private function getArtistTracksById($artistId)
     {
-        $artist = str_replace('_', ' ', $artist);
-        $artist = ucwords($artist);
         $artistTracks = DB::select("
                                 SELECT * FROM TRACKS
                                 WHERE
@@ -34,6 +32,23 @@ class ArtistController extends Controller
                                 ORDER BY TRACK_NAME_RU
                                 ");
         return $artistTracks;
+    }
+
+    // Возвращает количество песен исполнителя.
+    private function getArtistTracksNumberById($artistId)
+    {
+        $tracksNumber = DB::select("
+                                SELECT COUNT(*) AS TRACKS_NUMBER FROM TRACKS
+                                WHERE
+                                ARTIST_1 = " . $artistId . "
+                                OR
+                                ARTIST_2 = " . $artistId . "
+                                OR
+                                ARTIST_3 = " . $artistId . "
+                                ORDER BY TRACK_NAME_RU
+                                ");
+
+        return $tracksNumber[0]->TRACKS_NUMBER;
     }
 
     private function getArtistById($artistId)
@@ -54,7 +69,6 @@ class ArtistController extends Controller
             if (!empty($artist->artist_ru))
             {
                 $artist = $artist->artist_ru;
-
             }
             else continue;
 
@@ -78,7 +92,7 @@ class ArtistController extends Controller
         $title = $artist;
         $title = str_replace('_', ' ', $title);
         $title = ucwords($title);
-        $artistTracks = $this->getArtistTracks($artistId, $artist);
+        $artistTracks = $this->getArtistTracksById($artistId);
 
         $trArray = [];
         foreach($artistTracks as $artistTrack)
@@ -223,6 +237,111 @@ class ArtistController extends Controller
 
                     return view('artists.add', [
                         'title' => $title,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        $title = "Удалить исполнителя";
+
+        if ($request->isMethod('get'))
+        {
+            $msg = '';
+            $msgClass = '';
+
+            return view('artists.delete', [
+                'title' => $title,
+                'artists' =>$this->getArtists(),
+                'msg' => $msg,
+                'msgClass' => $msgClass
+            ]);
+        }
+        else if ($request->isMethod('delete'))
+        {
+            $this->validate($request, [
+                'artist_id' => 'required',
+            ]);
+
+            if (!empty($request['artist_id']))
+            {
+                $artist_id = $request['artist_id'];
+
+                // Смотрим, есть ли автор, которого пытаемся удалить, в таблице artists.
+                $artistExists = false;
+                $artists = (new ArtistController())->getArtists();
+                foreach($artists as $artist)
+                {
+                    if ($artist_id == $artist->id) $artistExists = true;
+                    else continue;
+                }
+
+                // Получаем количество песен исполнителя.
+                // Нужно, чтобы у исполнитя, которого удаляем, не было песен.
+                $artistHasTracks = false;
+                $artistTracksNumber = $this->getArtistTracksNumberById($artist_id);
+                if ($artistTracksNumber >= 1)
+                {
+                    $artistHasTracks = true;
+                }
+
+                if ($artistExists)
+                {
+                    if ($artistHasTracks)
+                    {
+                        $msg = 'У выбранного исполнителя есть треки. Сначала удалите треки, потом исполнителя';
+                        $msgClass = 'alert-danger';
+
+                        return view('artists.delete', [
+                            'title' => $title,
+                            'artists' =>$this->getArtists(),
+                            'msg' => $msg,
+                            'msgClass' => $msgClass
+                        ]);
+                    }
+                    else
+                    {
+                        // Возвращает количество затронутых строк.
+                        $deleted = DB::delete('delete from artists where id = :id', ['id' => $artist_id]);
+
+                        if($deleted >= 1)
+                        {
+                            $msg = $deleted;
+                            $msgClass = 'alert-success';
+
+                            return view('artists.delete', [
+                                'title' => $title,
+                                'artists' =>$this->getArtists(),
+                                'msg' => $msg,
+                                'msgClass' => $msgClass
+                            ]);
+                        }
+                        else
+                        {
+                            $msg = $deleted;
+                            $msgClass = 'alert-success';
+
+                            return view('artists.delete', [
+                                'title' => $title,
+                                'artists' =>$this->getArtists(),
+                                'msg' => $msg,
+                                'msgClass' => $msgClass
+                            ]);
+                        }
+                    }
+                }
+                else
+                {
+                    $msg = 'Такого исполнителя нет в базе';
+                    $msgClass = 'alert-danger';
+
+                    return view('artists.delete', [
+                        'title' => $title,
+                        'artists' =>$this->getArtists(),
                         'msg' => $msg,
                         'msgClass' => $msgClass
                     ]);

@@ -34,21 +34,21 @@
         <table class="card-translations-table-translation card-shadow">
             <thead>
             <tr>
-                <th>Обновить</th>
+                <th>Изменить</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td>
-                    <a href="/tracks/update">
-                        <span class="song-name">Редактировать трек</span>
+                    <a href="/tracks/edit">
+                        <span class="song-name">Изменить трек</span>
                     </a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href="/artists/update">
-                        <span class="song-name">Редактировать исполнителя</span>
+                    <a href="/artists/edit">
+                        <span class="song-name">Изменить исполнителя</span>
                     </a>
                 </td>
             </tr>
