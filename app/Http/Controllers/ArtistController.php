@@ -198,7 +198,7 @@ class ArtistController extends Controller
 
                 // Смотрим, есть ли автор, которого пытаемся добавить, в таблице artists.
                 $noMatches = true;
-                $artists = (new ArtistController())->getArtists();
+                $artists = $this->getArtists();
                 foreach($artists as $artist)
                 {
                     if (strtoupper($artist_ru) == strtoupper($artist->artist_ru) or strtoupper($artist_ru) == strtoupper($artist->artist_en))
@@ -245,6 +245,86 @@ class ArtistController extends Controller
         }
     }
 
+    public function edit(Request $request)
+    {
+        $title = "Изменить исполнителя";
+
+        $artists = $this->getArtists();
+
+        if ($request->isMethod('get'))
+        {
+            $msg = '';
+            $msgClass = '';
+
+            return view('artists.edit', [
+                'title' => $title,
+                'artists' => $artists,
+                'msg' => $msg,
+                'msgClass' => $msgClass,
+            ]);
+        }
+        else if ($request->isMethod('post'))
+        {
+            $this->validate($request, [
+                'artist' => 'required',
+                'artistEditedEn' => 'required',
+                'artistEditedRu' => 'required'
+            ]);
+
+            if (!empty($request['artist']) and !empty($request['artistEditedEn']) and !empty($request['artistEditedRu']))
+            {
+                $artistOldId = $request['artist'];
+                $artistEditedEn = $request['artistEditedEn'];
+                $artistEditedRu = $request['artistEditedRu'];
+
+                $noChanges = true;
+
+                $artistOld = $this->getArtistById($artistOldId);
+                if ( ($artistEditedEn != $artistOld->artist_en) or ($artistEditedRu != $artistOld->artist_ru) )
+                {
+                    $noChanges = false;
+                }
+
+                if ($noChanges)
+                {
+                    $msg = 'Нет изменений ни в англ., ни в рус.';
+                    $msgClass = 'alert-danger';
+
+                    return view('artists.edit', [
+                        'title' => $title,
+                        'artists' => $artists,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+                else if ($noChanges == false)
+                {
+                    $affectedArtistTable = DB::update
+                    ('
+                        UPDATE ARTISTS SET ARTIST_EN = ?,
+                        ARTIST_RU = ?,
+                        LAST_UPDATE = NOW()
+                        WHERE
+                        ID = ?
+                        ',
+                        [$artistEditedEn, $artistEditedRu, $artistOldId]
+                    );
+
+                    $msg = 'Исполнитель изменён. ';
+                    $msg .= "Строк затронуто: $affectedArtistTable";
+                    $msgClass = 'alert-success';
+
+                    return view('artists.edit', [
+                        'title' => $title,
+                        'artists' => $artists,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                }
+            }
+        }
+    }
+
     public function delete(Request $request)
     {
         $title = "Удалить исполнителя";
@@ -273,7 +353,7 @@ class ArtistController extends Controller
 
                 // Смотрим, есть ли автор, которого пытаемся удалить, в таблице artists.
                 $artistExists = false;
-                $artists = (new ArtistController())->getArtists();
+                $artists = $this->getArtists();
                 foreach($artists as $artist)
                 {
                     if ($artist_id == $artist->id) $artistExists = true;

@@ -38,6 +38,8 @@ Route::match(['get', 'post'], '/artists/add', 'ArtistController@add');
 
 Route::match(['get', 'post'], '/tracks/add', 'TrackController@add');
 
+Route::match(['get', 'post'], '/artists/edit', 'ArtistController@edit');
+
 Route::redirect('/games', '/games/doom');
 
 Route::get('/games/doom', 'GameController@doom');
