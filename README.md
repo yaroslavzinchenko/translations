@@ -2,7 +2,7 @@
 
 ### Ссылки:
 
-https://yaroslav-zinchenko.000webhostapp.com/translations
+https://yaroslav-zinchenko.000webhostapp.com/translations - старая версия. Скоро появится новая.
 
 ### Описание
 Веб-приложение. Позволяет просматривать, добавлять, удалять и изменять музыкальные тексты.
