@@ -51,7 +51,7 @@ class ArtistController extends Controller
         return $tracksNumber[0]->TRACKS_NUMBER;
     }
 
-    private function getArtistById($artistId)
+    public function getArtistById($artistId)
     {
         $artist = DB::select("SELECT * FROM ARTISTS WHERE ID = " . $artistId);
         return $artist[0];
@@ -247,9 +247,7 @@ class ArtistController extends Controller
 
     public function edit(Request $request)
     {
-        $title = "Изменить исполнителя";
-
-        $artists = $this->getArtists();
+        $title = "Выбор исполнителя для изменения";
 
         if ($request->isMethod('get'))
         {
@@ -258,12 +256,12 @@ class ArtistController extends Controller
 
             return view('artists.edit', [
                 'title' => $title,
-                'artists' => $artists,
+                'artists' => $this->getArtists(),
                 'msg' => $msg,
                 'msgClass' => $msgClass,
             ]);
         }
-        else if ($request->isMethod('post'))
+        else if ($request->isMethod('patch'))
         {
             $this->validate($request, [
                 'artist' => 'required',
@@ -292,7 +290,7 @@ class ArtistController extends Controller
 
                     return view('artists.edit', [
                         'title' => $title,
-                        'artists' => $artists,
+                        'artists' => $this->getArtists(),
                         'msg' => $msg,
                         'msgClass' => $msgClass
                     ]);
@@ -316,7 +314,7 @@ class ArtistController extends Controller
 
                     return view('artists.edit', [
                         'title' => $title,
-                        'artists' => $artists,
+                        'artists' => $this->getArtists(),
                         'msg' => $msg,
                         'msgClass' => $msgClass
                     ]);
@@ -336,7 +334,7 @@ class ArtistController extends Controller
 
             return view('artists.delete', [
                 'title' => $title,
-                'artists' =>$this->getArtists(),
+                'artists' => $this->getArtists(),
                 'msg' => $msg,
                 'msgClass' => $msgClass
             ]);
@@ -373,7 +371,7 @@ class ArtistController extends Controller
                 {
                     if ($artistHasTracks)
                     {
-                        $msg = 'У выбранного исполнителя есть треки. Сначала удалите треки, потом исполнителя';
+                        $msg = 'У выбранного исполнителя есть треки. Сначала удалите треки, потом исполнителя.';
                         $msgClass = 'alert-danger';
 
                         return view('artists.delete', [
@@ -402,7 +400,7 @@ class ArtistController extends Controller
                         }
                         else
                         {
-                            $msg = 'Не удалось удалить трек';
+                            $msg = "Не удалось удалить исполнителя. Количество затронутых строк: $deleted";
                             $msgClass = 'alert-danger';
 
                             return view('artists.delete', [

@@ -1,4 +1,3 @@
-<!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 @extends('layouts.main')
@@ -13,21 +12,26 @@
             <div class="alert {{$msgClass}}">{{$msg}}</div>
         @endif
 
-        <form method="POST" action="/tracks/add" id="addTrackForm" autocomplete="off">
+        <form method="POST" action="/tracks/edit/{{$track->id}}" id="addTrackForm" autocomplete="off">
+            @method('PATCH')
             @csrf
             <div class="form-group">
                 <label for="track_name_en">Название (по-английски)</label>
-                <input type="text" name="track_name_en" id="track_name_en" class="form-control" required onkeyup='saveValue(this);'>
+                <input type="text" name="track_name_en" id="track_name_en" class="form-control" value="{{$track->track_name_en}}" required onkeyup='saveValue(this);'>
             </div>
             <div class="form-group">
                 <label for="track_name_ru">Название (по-русски)</label>
-                <input type="text" name="track_name_ru" id="track_name_ru" class="form-control" placeholder="Не обязательное поле" onkeyup='saveValue(this);'>
+                <input type="text" name="track_name_ru" id="track_name_ru" class="form-control" value="{{$track->track_name_ru}}" required placeholder="Не обязательное поле" onkeyup='saveValue(this);'>
             </div>
             <div class="form-group">
                 <label for="artist_1">Исполнитель 1</label>
                 <select name="artist_1" id="artist_1" form="addTrackForm" class="form-control" required>
-                    <option label="" value=""></option>
+                    <option value="{{$artist1->id}}" selected>{{$artist1->artist_ru}}</option>
                     @foreach($artists as $artist)
+                        @if($artist->id == $artist1->id)
+                            @continue;
+                        @endif
+
                         @if($artist->artist_ru != $artist->artist_en)
                             <option value="{{$artist->id}}">{{$artist->artist_en}} - {{$artist->artist_ru}}</option>
                         @else
@@ -39,8 +43,15 @@
             <div class="form-group" id="form_artist_2">
                 <label for="artist_2">Исполнитель 2</label>
                 <select name="artist_2" id="artist_2" form="addTrackForm" class="form-control">
-                    <option label="" value="" selected></option>
+                    <option value=""></option>
+                    <option value="{{$artist2 != NULL ? $artist2->id : ''}}" selected>{{$artist2 != NULL ? $artist2->artist_ru : ''}}</option>
                     @foreach($artists as $artist)
+                        @if($artist2 != NULL)
+                            @if($artist->id == $artist2->id)
+                                @continue;
+                            @endif
+                        @endif
+
                         @if($artist->artist_ru != $artist->artist_en)
                             <option value="{{$artist->id}}">{{$artist->artist_en}} - {{$artist->artist_ru}}</option>
                         @else
@@ -52,8 +63,15 @@
             <div class="form-group" id="form_artist_3">
                 <label for="artist_3">Исполнитель 3</label>
                 <select name="artist_3" id="artist_3" form="addTrackForm" class="form-control">
-                    <option label="" value="" selected></option>
+                    <option value=""></option>
+                    <option value="{{$artist3 != NULL ? $artist3->id : ''}}" selected>{{$artist3 != NULL ? $artist3->artist_ru : ''}}</option>
                     @foreach($artists as $artist)
+                        @if($artist3 != NULL)
+                            @if($artist->id == $artist3->id)
+                                @continue;
+                            @endif
+                        @endif
+
                         @if($artist->artist_ru != $artist->artist_en)
                             <option value="{{$artist->id}}">{{$artist->artist_en}} - {{$artist->artist_ru}}</option>
                         @else
@@ -62,34 +80,21 @@
                     @endforeach
                 </select>
             </div>
-            Картинка вместо текста
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_no" value="image_for_lyrics_no" checked>
-                <label class="form-check-label" for="image_for_lyrics_no">
-                    Нет
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_yes" value="image_for_lyrics_yes">
-                <label class="form-check-label" for="image_for_lyrics_yes">
-                    Да
-                </label>
-            </div>
             <br>
             <div class="form-group lyrics_div" id="lyrics_div">
                 <label for="lyrics">Текст</label>
-                <textarea name="lyrics" id="lyrics" class="form-control" rows="20" required onkeyup='saveValue(this);'></textarea>
+                <textarea name="lyrics" id="lyrics" class="form-control" rows="20" required onkeyup='saveValue(this);'>{{$track->lyrics}}</textarea>
             </div>
             <div class="form-group">
                 <label for="spotify_link">Ссылка Spotify</label>
-                <input placeholder="Не обязательное поле" type="text" name="spotify_link" id="spotify_link" class="form-control" onkeyup='saveValue(this);'>
+                <input placeholder="Не обязательное поле" type="text" name="spotify_link" id="spotify_link" class="form-control" value="{{$track->spotify_link}}" onkeyup='saveValue(this);'>
             </div>
             <div class="form-group">
                 <label for="youtube_link">Ссылка YouTube</label>
-                <input placeholder="Не обязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" onkeyup='saveValue(this);'>
+                <input placeholder="Не обязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" value="{{$track->youtube_link}}" onkeyup='saveValue(this);'>
             </div>
             <br>
-            <button type="submit" name="submit" class="btn btn-primary">Добавить</button>
+            <button type="submit" name="submit" class="btn btn-primary">Изменить</button>
         </form>
         <br>
     </div>
@@ -103,29 +108,7 @@
 @endsection
 
 @section('bottomScripts')
-    <script src="/js/keepFormTrackAddInputValue.js"></script>
     <script src="/js/onBeforeUnload.js"></script>
 @endsection
 
-<script>
-    $(function() {
-        $('#form_artist_2').hide();
-        $('#artist_1').change(function(){
-            if($('#artist_1').val() != '') {
-                $('#form_artist_2').show();
-            } else {
-                $('#form_artist_2').hide();
-            }
-        });
-    });
-    $(function() {
-        $('#form_artist_3').hide();
-        $('#artist_2').change(function(){
-            if($('#artist_2').val() != '') {
-                $('#form_artist_3').show();
-            } else {
-                $('#form_artist_3').hide();
-            }
-        });
-    });
-</script>
+

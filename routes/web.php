@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+#use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ Route::get('/tracks', 'TrackController@index');
 
 Route::get('/tracks/34/where_the_streets_have_no_name', 'TrackController@whereTheStreetsHaveNoNameU2');
 
-Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
+#Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
 
 Route::get('/artists', 'ArtistController@index');
 
@@ -38,7 +38,11 @@ Route::match(['get', 'post'], '/artists/add', 'ArtistController@add');
 
 Route::match(['get', 'post'], '/tracks/add', 'TrackController@add');
 
-Route::match(['get', 'post'], '/artists/edit', 'ArtistController@edit');
+Route::match(['get', 'patch'], '/artists/edit', 'ArtistController@edit');
+
+Route::get('/tracks/edit', 'TrackController@edit');
+Route::match(['get', 'patch'], '/tracks/edit/{id}/', 'TrackController@editById');
+Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
 
 Route::redirect('/games', '/games/doom');
 

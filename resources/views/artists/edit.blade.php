@@ -15,6 +15,7 @@
         @endif
 
         <form method="POST" action="/artists/edit" id="editArtistForm" autocomplete="off">
+            @method('PATCH')
             @csrf
             <div class="form-group">
                 <label for="artist">Исполнитель</label>
@@ -38,7 +39,7 @@
                 <input type="text" name="artistEditedRu" id="artistEditedRu" class="form-control" required>
             </div>
             <br>
-            <button type="submit" name="submit" class="btn btn-primary">Отправить</button>
+            <button type="submit" name="submit" class="btn btn-primary">Изменить</button>
         </form>
         <br>
     </div>

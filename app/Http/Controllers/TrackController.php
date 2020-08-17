@@ -33,7 +33,9 @@ class TrackController extends Controller
             T2 AS (SELECT * FROM TRACKS)
             SELECT * FROM T2
             INNER JOIN T1
-            ON T2.ARTIST_1 = T1.ARTIST_ID'
+            ON T2.ARTIST_1 = T1.ARTIST_ID
+            ORDER BY track_name_ru
+            '
         );
 
         return $tracks;
@@ -43,12 +45,6 @@ class TrackController extends Controller
     {
         $track = DB::table('tracks')->where('id', '=', $trackId)->get();
         return $track;
-    }
-
-    private function getArtistById($artistId)
-    {
-        $artist = DB::select("SELECT * FROM ARTISTS WHERE ID = " . $artistId);
-        return $artist[0];
     }
 
     public function index()
@@ -62,11 +58,11 @@ class TrackController extends Controller
         {
             if ($track->artist_1 != NULL)
             {
-                $artist1 = $this->getArtistById($track->artist_1);
+                $artist1 = (new ArtistController())->getArtistById($track->artist_1);
             }
             if ($track->artist_2 != NULL)
             {
-                $artist2 = $this->getArtistById($track->artist_2);
+                $artist2 = (new ArtistController())->getArtistById($track->artist_2);
             }
             else
             {
@@ -74,7 +70,7 @@ class TrackController extends Controller
             }
             if ($track->artist_3 != NULL)
             {
-                $artist3 = $this->getArtistById($track->artist_3);
+                $artist3 = (new ArtistController())->getArtistById($track->artist_3);
             }
             else
             {
@@ -163,15 +159,15 @@ class TrackController extends Controller
 
         if ($track->artist_1 != NULL)
         {
-            $artist1 = $this->getArtistById($track->artist_1);
+            $artist1 = (new ArtistController())->getArtistById($track->artist_1);
         }
         if ($track->artist_2 != NULL)
         {
-            $artist2 = $this->getArtistById($track->artist_2);
+            $artist2 = (new ArtistController())->getArtistById($track->artist_2);
         }
         if ($track->artist_3 != NULL)
         {
-            $artist3 = $this->getArtistById($track->artist_3);
+            $artist3 = (new ArtistController())->getArtistById($track->artist_3);
         }
 
         if (!empty($artist2->artist_ru))
@@ -341,7 +337,7 @@ class TrackController extends Controller
 
                 // Проверяем, есть ли такой трек с исполнителями.
                 $noMatches = true;
-                $tracks = (new TrackController())->getTracks();
+                $tracks = $this->getTracks();
                 foreach($tracks as $track)
                 {
                     if ($artist_2 != NULL AND $artist_3 != NULL)
@@ -442,6 +438,234 @@ class TrackController extends Controller
                         'msgClass' => $msgClass
                     ]);
                 }
+            }
+        }
+    }
+
+    public function edit(Request $request)
+    {
+        $title = "Изменить треки";
+
+        $tracks = $this->getTracks();
+        $trArray = [];
+
+        foreach($tracks as $track)
+        {
+            if ($track->artist_1 != NULL)
+            {
+                $artist1 = (new ArtistController())->getArtistById($track->artist_1);
+            }
+            if ($track->artist_2 != NULL)
+            {
+                $artist2 = (new ArtistController())->getArtistById($track->artist_2);
+            }
+            else
+            {
+                $artist2 = NULL;
+            }
+            if ($track->artist_3 != NULL)
+            {
+                $artist3 = (new ArtistController())->getArtistById($track->artist_3);
+            }
+            else
+            {
+                $artist3 = NULL;
+            }
+
+            $trackId = $track->id;
+            $track_name_en = $track->track_name_en;
+
+            $track_name_en = strtolower($track_name_en);
+            $tr = "<tr><td><a href='edit/" . $trackId . "'>";
+            $tr .= "<img src='/images/icons/pencil.png' alt='' class='song-with-icon'>";
+            $tr .= "<span class='song-name'>";
+
+            if ($track->track_name_ru)
+            {
+                $tr .= $track->track_name_ru;
+            }
+            else
+            {
+                $tr .= $track->track_name_en;
+            }
+
+            $tr .= "</span> - <span class='song-artist'>";
+
+            if (!empty($artist1->artist_ru))
+            {
+                $tr .= $artist1->artist_ru;
+            }
+            else
+            {
+                $tr .= $artist1->artist_en;
+            }
+            if (!empty($artist2->artist_ru))
+            {
+                $tr .= ', ' . $artist2->artist_ru;
+            }
+            else if (!empty($artist2->artist_en))
+            {
+                $tr .= ', ' . $artist2->artist_en;
+            }
+            if (!empty($artist3->artist_ru))
+            {
+                $tr .= ', ' . $artist3->artist_ru;
+            }
+            else if (!empty($artist3->artist_en))
+            {
+                $tr .= ', ' . $artist3->artist_en;
+            }
+
+            $tr .= "</span></a></td></tr>";
+
+            $trArray [] = $tr;
+        }
+
+        return view('tracks.edit', [
+                'title' => $title,
+                'trArray' => $trArray
+            ]
+        );
+    }
+
+    public function editById($trackId, Request $request)
+    {
+        $title = "Изменить трек";
+
+        $artists = (new ArtistController())->getArtists();
+        $track = $this->getTrackById($trackId);
+        $track = $track[0];
+
+        $artist1 = (new ArtistController())->getArtistById($track->artist_1);
+        if ($track->artist_2 != NULL)
+        { $artist2 = (new ArtistController())->getArtistById($track->artist_2); } else $artist2 = NULL;
+
+        if ($track->artist_3 != NULL)
+        { $artist3 = (new ArtistController())->getArtistById($track->artist_3); } else $artist3 = NULL;
+
+        if ($request->isMethod('get'))
+        {
+            $msg = '';
+            $msgClass = '';
+
+            return view('tracks.editById', [
+                'title' => $title,
+                'artists' => $artists,
+                'artist1' => $artist1,
+                'artist2' => $artist2,
+                'artist3' => $artist3,
+                'track' => $track,
+                'msg' => $msg,
+                'msgClass' => $msgClass
+            ]);
+        }
+        if ($request->isMethod('patch'))
+        {
+            $this->validate($request, [
+                'track_name_en' => 'required',
+                'track_name_ru' => 'required',
+                'artist_1' => 'required',
+                'lyrics' => 'required',
+            ]);
+
+            $track_name_en = $request['track_name_en'];
+            $track_name_ru = $request['track_name_ru'];
+            $artist_1 = $request['artist_1'];
+            $artist_2 = empty($request['artist_2']) ? NULL : $request['artist_2'];
+            $artist_3 = empty($request['artist_3']) ? NULL : $request['artist_3'];
+            $lyrics = $request['lyrics'];
+            $spotify_link = $request['spotify_link'];
+            $youtube_link = $request['youtube_link'];
+
+            if (!empty($request['track_name_en']) and !empty($request['track_name_ru']) and !empty($request['artist_1']) and !empty($request['lyrics']))
+            {
+                $noChanges = false;
+                $tracks = $this->getTracks();
+                foreach($tracks as $track)
+                {
+                    if
+                    (
+                        (strtoupper($track_name_en) == strtoupper($track->track_name_en))
+                        and
+                        (strtoupper($track_name_ru) == strtoupper($track->track_name_ru))
+                        and
+                        ($artist_1 == $track->artist_1)
+                        and
+                        ($artist_2 == $track->artist_2)
+                        and
+                        ($lyrics == $track->lyrics)
+                        and
+                        ($spotify_link == $track->spotify_link)
+                        and
+                        ($youtube_link == $track->youtube_link)
+                    )
+                    {
+                        $noChanges = true;
+                    }
+                }
+
+                if ($noChanges)
+                {
+                    $msg = "Изменений нет.";
+                    $msgClass = 'alert-danger';
+                }
+                else
+                {
+                    if ($lyrics == "")
+                    {
+                        $msg = "Нет текста.";
+                        $msgClass = 'alert-danger';
+
+                        return view('tracks.editById', [
+                            'title' => $title,
+                            'artists' => $artists,
+                            'artist1' => $artist1,
+                            'artist2' => $artist2,
+                            'artist3' => $artist3,
+                            'track' => $track,
+                            'msg' => $msg,
+                            'msgClass' => $msgClass
+                        ]);
+                    }
+
+                        $affected = DB::table('tracks')
+                            ->where('id', $trackId)
+                            ->update([
+                                'track_name_en' => $track_name_en,
+                                'track_name_ru' => $track_name_ru,
+                                'artist_1' => ($artist_1 == NULL ? NULL : $artist_1),
+                                'artist_2' => ($artist_2 == NULL ? NULL : $artist_2),
+                                'artist_3' => ($artist_3 == NULL ? NULL : $artist_3),
+                                'lyrics' => ($lyrics == NULL ? NULL : $lyrics),
+                                'spotify_link' => ($spotify_link == NULL ? NULL : $spotify_link),
+                                'youtube_link' => ($youtube_link == NULL ? NULL : $youtube_link),
+                            ]);
+
+
+                    $msg = "Трек изменён. В базе данных затронуто записей: $affected.";
+                    $msgClass = 'alert-success';
+                }
+
+                $track = $this->getTrackById($trackId);
+                $track = $track[0];
+
+                $artist1 = (new ArtistController())->getArtistById($track->artist_1);
+                if ($track->artist_2 != NULL)
+                { $artist2 = (new ArtistController())->getArtistById($track->artist_2); } else $artist2 = NULL;
+
+                if ($track->artist_3 != NULL)
+                { $artist3 = (new ArtistController())->getArtistById($track->artist_3); } else $artist3 = NULL;
+
+                return view('tracks.editById', [
+                    'title' => $title,
+                    'artists' => $artists,
+                    'artist1' => $artist1,
+                    'artist2' => $artist2,
+                    'artist3' => $artist3,
+                    'track' => $track,
+                    'msg' => $msg,
+                    'msgClass' => $msgClass
+                ]);
             }
         }
     }
