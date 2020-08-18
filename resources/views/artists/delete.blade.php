@@ -16,6 +16,7 @@
             <div class="form-group">
                 <label for="artist_id">Исполнитель</label>
                 <select name="artist_id" id="artist_id" form="deleteArtistForm" class="form-control" required>
+                    <option></option>
                     @foreach($artists as $artist)
                         @if($artist->artist_ru != $artist->artist_en)
                             <option value="{{$artist->id}}">{{$artist->artist_ru}}</option>
