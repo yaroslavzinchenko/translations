@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label for="track_name_ru">Название (по-русски)</label>
-                <input type="text" name="track_name_ru" id="track_name_ru" class="form-control" placeholder="Не обязательное поле" onkeyup='saveValue(this);'>
+                <input type="text" name="track_name_ru" id="track_name_ru" class="form-control" placeholder="Необязательное поле" onkeyup='saveValue(this);'>
             </div>
             <div class="form-group">
                 <label for="artist_1">Исполнитель 1</label>
@@ -82,11 +82,11 @@
             </div>
             <div class="form-group">
                 <label for="spotify_link">Ссылка Spotify</label>
-                <input placeholder="Не обязательное поле" type="text" name="spotify_link" id="spotify_link" class="form-control" onkeyup='saveValue(this);'>
+                <input placeholder="Необязательное поле" type="text" name="spotify_link" id="spotify_link" class="form-control" onkeyup='saveValue(this);'>
             </div>
             <div class="form-group">
                 <label for="youtube_link">Ссылка YouTube</label>
-                <input placeholder="Не обязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" onkeyup='saveValue(this);'>
+                <input placeholder="Необязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" onkeyup='saveValue(this);'>
             </div>
             <br>
             <button type="submit" name="submit" class="btn btn-primary">Добавить</button>

@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label for="artist_ru">Исполнитель (по-русски)</label>
-                <input placeholder="Не обязательное поле" type="text" name="artist_ru" id="artist_ru" class="form-control" onkeyup='saveValue(this);'>
+                <input placeholder="Необязательное поле" type="text" name="artist_ru" id="artist_ru" class="form-control" onkeyup='saveValue(this);'>
             </div>
             <br>
             <button type="submit" name="submit" class="btn btn-primary">Добавить</button>
