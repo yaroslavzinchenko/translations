@@ -9,16 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class ArtistController extends Controller
 {
-    public static function getArtistsByUserId(int $userId): array
+    public static function getArtistsByUserId(int $userId)
     {
-        $artists = DB::select("
-                            SELECT id,
-                            artist_en,
-                            artist_ru
-                            FROM ARTISTS
-                            WHERE user_id_fk = $userId
-                            ORDER BY ARTIST_RU
-                            ");
+        $artists = DB::table('artists')
+            ->select('id', 'artist_en', 'artist_ru')
+            ->where('user_id_fk', '=', $userId)
+            ->orderBy('artist_ru', 'asc')
+            ->get();
 
         return $artists;
     }
@@ -389,103 +386,106 @@ class ArtistController extends Controller
 
     public function delete(Request $request)
     {
+        if (AuthController::checkIfUserLoggedIn() === 1) {
+            $currentUserId = $_SESSION['userId'];
+        } else {
+            $_SESSION['warning'] = "You are not logged in.";
+            header('Location: /login');
+            exit();
+        }
+        if (AuthController::checkIfUserVerified() !== 1) {
+            $_SESSION['warning'] = "Email is not verified yet.";
+            header('Location: /verify-email');
+            exit();
+        }
+
         $title = "Удалить исполнителя";
 
-        if ($request->isMethod('get'))
-        {
-            $msg = '';
-            $msgClass = '';
-
+        if ($request->isMethod('get')) {
             return view('artists.delete', [
                 'title' => $title,
-                'artists' => $this->getArtistsByUserId(),
-                'msg' => $msg,
-                'msgClass' => $msgClass
+                'artists' => $this->getArtistsByUserId($currentUserId),
+                'msg' => '',
+                'msgClass' => '',
             ]);
         }
-        else if ($request->isMethod('delete'))
-        {
+        elseif ($request->isMethod('delete')) {
             $this->validate($request, [
                 'artist_id' => 'required',
+                'userIdFromForm' => 'required',
             ]);
 
-            if (!empty($request['artist_id']))
-            {
-                $artist_id = $request['artist_id'];
+            if (!empty($request['artist_id']) and !empty($request['userIdFromForm'])) {
+                # Если пользователь, отправивший форму, не совпадает с текущим авторизованным пользователем, прерываем выполнение.
+                if ($currentUserId != $request['userIdFromForm']) {
+                    return view('artists.delete', [
+                        'title' => $title,
+                        'artists' => $this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Вы зашли под другим пользователем.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
+
+                # Если пользователь, отправивший форму, не является владельцем исполнителя, прерываем выполнение.
+                if ($request['userIdFromForm'] != $this->getArtistOwnerIdByArtistId((int) $request['artist_id'])) {
+                    return view('artists.delete', [
+                        'title' => $title,
+                        'artists' => $this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Вы не владелец этого исполнителя.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
 
                 # Смотрим, есть ли автор, которого пытаемся удалить, в таблице artists.
                 $artistExists = false;
-                $artists = $this->getArtistsByUserId();
-                foreach($artists as $artist)
-                {
-                    if ($artist_id == $artist->id) $artistExists = true;
+                $artists = $this->getArtistsByUserId($currentUserId);
+                foreach($artists as $artist) {
+                    if ($request['artist_id'] == $artist->id) $artistExists = true;
                     else continue;
                 }
 
                 # Получаем количество песен исполнителя.
                 # Нужно, чтобы у исполнитя, которого удаляем, не было песен.
                 $artistHasTracks = false;
-                $artistTracksNumber = $this->getArtistTracksNumberById($artist_id);
-                if ($artistTracksNumber >= 1)
-                {
+                $artistTracksNumber = $this->getArtistTracksNumberById($request['artist_id']);
+                if ($artistTracksNumber >= 1) {
                     $artistHasTracks = true;
                 }
 
-                if ($artistExists)
-                {
-                    if ($artistHasTracks)
-                    {
-                        $msg = 'У выбранного исполнителя есть треки. Сначала удалите треки, потом исполнителя.';
-                        $msgClass = 'alert-danger';
-
+                if ($artistExists) {
+                    if ($artistHasTracks) {
                         return view('artists.delete', [
                             'title' => $title,
-                            'artists' =>$this->getArtistsByUserId(),
-                            'msg' => $msg,
-                            'msgClass' => $msgClass
+                            'artists' => $this->getArtistsByUserId($currentUserId),
+                            'msg' => 'У выбранного исполнителя есть треки. Сначала удалите треки, потом исполнителя.',
+                            'msgClass' => 'alert-danger',
                         ]);
-                    }
-                    else
-                    {
+                    } else {
                         # Возвращает количество затронутых строк.
-                        $deleted = DB::delete('delete from artists where id = :id', ['id' => $artist_id]);
+                        $deleted = DB::delete('DELETE FROM artists WHERE id = :id', ['id' => $request['artist_id']]);
 
-                        if($deleted >= 1)
-                        {
-                            $msg = 'Запись удалена';
-                            $msgClass = 'alert-success';
-
+                        if($deleted >= 1) {
                             return view('artists.delete', [
                                 'title' => $title,
-                                'artists' =>$this->getArtistsByUserId(),
-                                'msg' => $msg,
-                                'msgClass' => $msgClass
+                                'artists' =>$this->getArtistsByUserId($currentUserId),
+                                'msg' => 'Запись удалена.',
+                                'msgClass' => 'alert-success',
                             ]);
-                        }
-                        else
-                        {
-                            $msg = "Не удалось удалить исполнителя. Количество затронутых строк: $deleted";
-                            $msgClass = 'alert-danger';
-
+                        } else {
                             return view('artists.delete', [
                                 'title' => $title,
-                                'artists' =>$this->getArtistsByUserId(),
-                                'msg' => $msg,
-                                'msgClass' => $msgClass
+                                'artists' =>$this->getArtistsByUserId($currentUserId),
+                                'msg' => "Не удалось удалить исполнителя. Количество затронутых строк: $deleted",
+                                'msgClass' => 'alert-danger',
                             ]);
                         }
                     }
-                }
-                else
-                {
-                    $msg = 'Такого исполнителя нет в базе';
-                    $msgClass = 'alert-danger';
-
+                } else {
                     return view('artists.delete', [
                         'title' => $title,
-                        'artists' =>$this->getArtistsByUserId(),
-                        'msg' => $msg,
-                        'msgClass' => $msgClass
+                        'artists' =>$this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Такого исполнителя нет в базе',
+                        'msgClass' => 'alert-danger',
                     ]);
                 }
             }

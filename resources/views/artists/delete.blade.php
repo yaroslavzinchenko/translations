@@ -26,6 +26,7 @@
                     @endforeach
                 </select>
             </div>
+            <input type="hidden" name="userIdFromForm" id="userIdFromForm" value="{{$_SESSION['userId']}}">
             <br>
             <button type="submit" name="submit" class="btn btn-danger">Удалить</button>
         </form>

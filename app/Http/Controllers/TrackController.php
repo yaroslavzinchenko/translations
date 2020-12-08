@@ -798,7 +798,7 @@ class TrackController extends Controller
                         return view('tracks.delete', [
                             'title' => $title,
                             'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
-                            'msg' => 'Запись удалена',
+                            'msg' => 'Запись удалена.',
                             'msgClass' => 'alert-success',
                         ]);
                     }
