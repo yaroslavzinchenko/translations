@@ -9,7 +9,7 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-        LogController::logUserAction('/');
+        LogController::logUserAction('/', 'visit');
 
         $title = "Добро пожаловать";
         return view('welcome.index', [

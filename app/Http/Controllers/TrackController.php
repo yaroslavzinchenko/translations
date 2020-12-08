@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TrackController extends Controller
 {
-    public static function getTracksByUserId(int $userId)
+    public static function getTracksByUserId(int $userId): array
     {
         $tracks = DB::select("
                                     SELECT *
@@ -34,23 +34,30 @@ class TrackController extends Controller
         return $ownerId;
     }
 
-    public function getTracksWithArtistNames()
+    public function getTracksWithArtistNamesByUserId(int $userId)
     {
         $tracks = DB::select
-        ('
-            WITH T1 AS (
-            SELECT ID AS ARTIST_ID,
-            artist_en,
-            artist_ru,
-            add_time
-            FROM ARTISTS
+        ("
+            WITH t1 AS
+            (
+                SELECT id AS artist_id,
+                artist_en,
+                artist_ru,
+                add_time,
+                user_id_fk
+                FROM artists
+                WHERE user_id_fk = :user_id_fk1
             ),
-            T2 AS (SELECT * FROM TRACKS)
-            SELECT * FROM T2
-            INNER JOIN T1
-            ON T2.ARTIST_1 = T1.ARTIST_ID
+            t2 AS
+            (
+                SELECT * FROM tracks
+                WHERE user_id_fk = :user_id_fk2
+            )
+            SELECT * FROM t2
+            INNER JOIN t1
+            ON t2.ARTIST_1 = t1.artist_id
             ORDER BY track_name_ru
-            '
+            ", ['user_id_fk1' => $userId, 'user_id_fk2' => $userId]
         );
 
         return $tracks;
@@ -719,6 +726,19 @@ class TrackController extends Controller
 
     public function delete(Request $request)
     {
+        if (AuthController::checkIfUserLoggedIn() === 1) {
+            $currentUserId = $_SESSION['userId'];
+        } else {
+            $_SESSION['warning'] = "You are not logged in.";
+            header('Location: /login');
+            exit();
+        }
+        if (AuthController::checkIfUserVerified() !== 1) {
+            $_SESSION['warning'] = "Email is not verified yet.";
+            header('Location: /verify-email');
+            exit();
+        }
+
         $title = 'Удалить трек';
 
         if ($request->isMethod('get')) {
@@ -727,62 +747,76 @@ class TrackController extends Controller
 
             return view('tracks.delete', [
                 'title' => $title,
-                'tracks' => $this->getTracksWithArtistNames(),
+                'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
                 'msg' => $msg,
-                'msgClass' => $msgClass
+                'msgClass' => $msgClass,
             ]);
         }
         elseif ($request->isMethod('delete')) {
             $this->validate($request, [
                 'track_id' => 'required',
+                'userIdFromForm' => 'required',
             ]);
 
-            if (!empty($request['track_id'])) {
+            if (!empty($request['track_id']) and !empty($request['userIdFromForm'])) {
                 $trackId = $request['track_id'];
-                // Смотрим, есть ли трек, который пытаемся удалить, в таблице tracks.
+                $userIdFromForm = $request['userIdFromForm'];
+
+                # Если пользователь, отправивший форму, не совпадает с текущим авторизованным пользователем, прерываем выполнение.
+                if ($currentUserId != $request['userIdFromForm']) {
+                    return view('tracks.delete', [
+                        'title' => $title,
+                        'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
+                        'msg' => 'Вы зашли под другим пользователем.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
+
+                # Если пользователь, отправивший форму, не является владельцем трека, прерываем выполнение.
+                if ($request['userIdFromForm'] != $this->getTrackOwnerIdByTrackId((int) $trackId)) {
+                    return view('tracks.delete', [
+                        'title' => $title,
+                        'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
+                        'msg' => 'Вы не владелец этого трека.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
+
+                # Смотрим, есть ли трек, который пытаемся удалить, в таблице tracks.
                 $trackExists = false;
-                $tracks = $this->getTracksByUserId();
+                $tracks = $this->getTracksByUserId($currentUserId);
                 foreach($tracks as $track) {
                     if ($trackId == $track->id) $trackExists = true;
                     else continue;
                 }
 
                 if ($trackExists) {
-                    // Возвращает количество затронутых строк.
-                    $deleted = DB::delete('delete from tracks where id = :id', ['id' => $trackId]);
+                    # Возвращает количество затронутых строк.
+                    $deleted = DB::delete('DELETE FROM tracks WHERE id = :id', ['id' => $trackId]);
 
                     if($deleted >= 1) {
-                        $msg = 'Запись удалена';
-                        $msgClass = 'alert-success';
-
                         return view('tracks.delete', [
                             'title' => $title,
-                            'tracks' => $this->getTracksWithArtistNames(),
-                            'msg' => $msg,
-                            'msgClass' => $msgClass
+                            'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
+                            'msg' => 'Запись удалена',
+                            'msgClass' => 'alert-success',
                         ]);
                     }
                     else {
-                        $msg = 'Не удалось удалить трек';
-                        $msgClass = 'alert-danger';
-
                         return view('tracks.delete', [
                             'title' => $title,
-                            'tracks' => $this->getTracksWithArtistNames(),
-                            'msg' => $msg,
-                            'msgClass' => $msgClass
+                            'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
+                            'msg' => 'Не удалось удалить трек',
+                            'msgClass' => 'alert-danger',
                         ]);
                     }
                 }
                 else {
-                    $msg = 'Такого трека нет в базе';
-                    $msgClass = 'alert-danger';
-
                     return view('tracks.delete', [
                         'title' => $title,
-                        'tracks' => $this->getTracksWithArtistNames(),
-                        'msg' => $msg,
-                        'msgClass' => $msgClass
+                        'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
+                        'msg' => 'Такого трека нет в базе',
+                        'msgClass' => 'alert-danger',
                     ]);
                 }
             }
