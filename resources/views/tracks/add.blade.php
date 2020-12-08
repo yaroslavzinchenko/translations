@@ -1,3 +1,7 @@
+@php
+$userIdFromForm = $_SESSION['userId'];
+@endphp
+
 <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -62,19 +66,6 @@
                     @endforeach
                 </select>
             </div>
-            Картинка вместо текста
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_no" value="image_for_lyrics_no" checked>
-                <label class="form-check-label" for="image_for_lyrics_no">
-                    Нет
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="image_for_lyrics" id="image_for_lyrics_yes" value="image_for_lyrics_yes">
-                <label class="form-check-label" for="image_for_lyrics_yes">
-                    Да
-                </label>
-            </div>
             <br>
             <div class="form-group lyrics_div" id="lyrics_div">
                 <label for="lyrics">Текст</label>
@@ -88,6 +79,7 @@
                 <label for="youtube_link">Ссылка YouTube</label>
                 <input placeholder="Необязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" onkeyup='saveValue(this);'>
             </div>
+            <input type="hidden" name="userIdFromForm" id="userIdFromForm" value="{{$userIdFromForm}}">
             <br>
             <button type="submit" name="submit" class="btn btn-primary">Добавить</button>
         </form>

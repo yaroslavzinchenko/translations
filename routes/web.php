@@ -17,20 +17,36 @@
     return view('welcome');
 });*/
 
-Route::redirect('/', '/tracks');
 
-Route::get('/tracks', 'TrackController@index');
+if (session_status() != PHP_SESSION_DISABLED and session_status() == PHP_SESSION_NONE)
+{
+    session_start();
+}
+/*print_r(session_status());
+print_r($_SESSION);*/
 
-Route::get('/tracks/34/where_the_streets_have_no_name', 'TrackController@whereTheStreetsHaveNoNameU2');
+# Get the currently authenticated user's name.
+$username = isset($_SESSION['username']) ? strtolower($_SESSION['username']) : "yaroslavzinchenko";
 
-#Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
+/*$routeHome = $userId == '' ? "users/1/tracks" : "users/$userId/tracks";
+Route::redirect('/', $routeHome);*/
 
-Route::get('/artists', 'ArtistController@index');
+
+Route::get("/", 'WelcomeController@index');
+
+Route::redirect('/tracks', "/user/{$username}/tracks");
+Route::get("/user/{username}/tracks", 'TrackController@index');
+
+Route::get('/user/yaroslavzinchenko/tracks/34/where_the_streets_have_no_name', 'TrackController@whereTheStreetsHaveNoNameU2');
+
+
+Route::redirect('/artists', "/user/{$username}/artists");
+Route::get('/user/{username}/artists', 'ArtistController@index');
 
 Route::get('/artists/{artistId}/{artist}', 'ArtistController@showArtistSongs');
 
 
-// Edit.
+# Edit.
 
 Route::get('/edit', 'EditController@index');
 
@@ -42,9 +58,8 @@ Route::match(['get', 'patch'], '/artists/edit', 'ArtistController@edit');
 
 Route::get('/tracks/edit', 'TrackController@edit');
 Route::match(['get', 'patch'], '/tracks/edit/{id}/', 'TrackController@editById');
-Route::get('/tracks/{id}/{track_name}', 'TrackController@showTrack');
+Route::get('/user/{username}/tracks/{id}/{track_name}', 'TrackController@showTrack');
 
-Route::redirect('/games', '/games/doom');
 
 Route::get('/games/doom', 'GameController@doom');
 
@@ -53,5 +68,14 @@ Route::get('/games/doom', 'GameController@doom');
 Route::match(['get', 'delete'], '/artists/delete/', 'ArtistController@delete');
 
 Route::match(['get', 'delete'], '/tracks/delete/', 'TrackController@delete');
+
+# Auth.
+
+Route::match(['get', 'post'], '/login', 'AuthController@login');
+Route::get( '/logout', 'AuthController@logout');
+Route::match(['get', 'post'], '/signup', 'AuthController@signup');
+Route::match(['get', 'post'], '/forgot-password', 'AuthController@forgotPassword');
+Route::match(['get', 'post'], '/verify-email', 'AuthController@verifyEmail');
+
 
 

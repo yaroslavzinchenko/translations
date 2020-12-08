@@ -22,6 +22,7 @@
                 <input placeholder="Необязательное поле" type="text" name="artist_ru" id="artist_ru" class="form-control" onkeyup='saveValue(this);'>
             </div>
             <br>
+            <input type="hidden" name="userIdFromForm" id="userIdFromForm" value="{{$_SESSION['userId']}}">
             <button type="submit" name="submit" class="btn btn-primary">Добавить</button>
         </form>
         <br>

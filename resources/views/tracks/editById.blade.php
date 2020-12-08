@@ -1,3 +1,12 @@
+@php
+if ($_SESSION['userId'] != $trackOwnerId) {
+    $_SESSION['error'] = "Этот трек принадлежит не вам.";
+    header('Location: /');
+    exit();
+}
+@endphp
+
+<!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 @extends('layouts.main')
@@ -93,6 +102,7 @@
                 <label for="youtube_link">Ссылка YouTube</label>
                 <input placeholder="Необязательное поле" type="text" name="youtube_link" id="youtube_link" class="form-control" value="{{$track->youtube_link}}" onkeyup='saveValue(this);'>
             </div>
+            <input type="hidden" name="userIdFromForm" id="userIdFromForm" value="{{$_SESSION['userId']}}">
             <br>
             <button type="submit" name="submit" class="btn btn-primary">Изменить</button>
         </form>

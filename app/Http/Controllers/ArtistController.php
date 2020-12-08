@@ -1,20 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ArtistController extends Controller
 {
-    public function getArtists()
+    public static function getArtistsByUserId(int $userId): array
     {
-        $artists = DB::select('
+        $artists = DB::select("
                             SELECT id,
                             artist_en,
                             artist_ru
-                            FROM ARTISTS ORDER BY ARTIST_RU
-                            ');
+                            FROM ARTISTS
+                            WHERE user_id_fk = $userId
+                            ORDER BY ARTIST_RU
+                            ");
 
         return $artists;
     }
@@ -34,7 +38,7 @@ class ArtistController extends Controller
         return $artistTracks;
     }
 
-    // Возвращает количество песен исполнителя.
+    # Возвращает количество песен исполнителя.
     private function getArtistTracksNumberById($artistId)
     {
         $tracksNumber = DB::select("
@@ -51,17 +55,29 @@ class ArtistController extends Controller
         return $tracksNumber[0]->TRACKS_NUMBER;
     }
 
-    public function getArtistById($artistId)
+    public static function getArtistById($artistId)
     {
         $artist = DB::select("SELECT * FROM ARTISTS WHERE ID = " . $artistId);
         return $artist[0];
     }
 
-    public function index()
+    public static function getArtistOwnerIdByArtistId(int $artistId): int
+    {
+        $ownerId = DB::table('artists')
+            ->select('user_id_fk')
+            ->where('id', '=', $artistId)
+            ->limit(1)
+            ->get();
+        $ownerId = $ownerId[0]->user_id_fk;
+        return $ownerId;
+    }
+
+    public function index($username)
     {
         $title = "Исполнители";
 
-        $artists = $this->getArtists();
+        $userId = UserController::getUserIdByUsername($username);
+        $artists = $this->getArtistsByUserId($userId);
         $trArray = [];
         foreach($artists as $artist)
         {
@@ -164,10 +180,22 @@ class ArtistController extends Controller
 
     public function add(Request $request)
     {
+        if (AuthController::checkIfUserLoggedIn() === 1) {
+            $currentUserId = $_SESSION['userId'];
+        } else {
+            $_SESSION['warning'] = "You are not logged in.";
+            header('Location: /login');
+            exit();
+        }
+        if (AuthController::checkIfUserVerified() !== 1) {
+            $_SESSION['warning'] = "Email is not verified yet.";
+            header('Location: /verify-email');
+            exit();
+        }
+
         $title = "Добавить исполнителя";
 
-        if ($request->isMethod('get'))
-        {
+        if ($request->isMethod('get')) {
             $msg = '';
             $msgClass = '';
 
@@ -176,62 +204,69 @@ class ArtistController extends Controller
                 'msg' => $msg,
                 'msgClass' => $msgClass
             ]);
-        }
-        else if ($request->isMethod('post'))
-        {
+        } elseif ($request->isMethod('post')) {
             $this->validate($request, [
                 'artist_en' => 'required',
+                'userIdFromForm' => 'required',
             ]);
 
-            // Проверяем, не пусто ли необходимое поле.
-            if (!empty($request['artist_en']))
-            {
-                $artist_en = $request['artist_en'];
-                if (!empty($request['artist_ru']))
-                {
-                    $artist_ru = $request['artist_ru'];
-                }
-                else
-                {
-                    $artist_ru = $request['artist_en'];
-                }
-
-                // Смотрим, есть ли автор, которого пытаемся добавить, в таблице artists.
-                $noMatches = true;
-                $artists = $this->getArtists();
-                foreach($artists as $artist)
-                {
-                    if (strtoupper($artist_ru) == strtoupper($artist->artist_ru) or strtoupper($artist_ru) == strtoupper($artist->artist_en))
-                    {
-                        $noMatches = false;
-                    }
-                    else if (strtoupper($artist_en) == strtoupper($artist->artist_ru) or strtoupper($artist_en) == strtoupper($artist->artist_en))
-                    {
-                        $noMatches = false;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                if ($noMatches)
-                {
-                    DB::table('artists')->insert(
-                        ['artist_en' => $artist_en, 'artist_ru' => $artist_ru]
-                    );
-
-                    $msg = 'Исполнитель добавлен';
-                    $msgClass = 'alert-success';
-
+            # Проверяем, не пусто ли необходимое поле.
+            if (!empty($request['artist_en']) and !empty($request['userIdFromForm'])) {
+                # Если пользователь, отправивший форму, не совпадает с текущим авторизованным пользователем, прерываем выполнение.
+                if ($currentUserId != $request['userIdFromForm']) {
+                    $msg = 'Вы зашли под другим пользователем.';
+                    $msgClass = 'alert-danger';
                     return view('artists.add', [
                         'title' => $title,
                         'msg' => $msg,
                         'msgClass' => $msgClass
                     ]);
                 }
-                else
-                {
+
+                $artist_en = $request['artist_en'];
+                if (!empty($request['artist_ru'])) {
+                    $artist_ru = $request['artist_ru'];
+                } else {
+                    $artist_ru = $request['artist_en'];
+                }
+
+                # Смотрим, есть ли автор, которого пытаемся добавить, в таблице artists.
+                $noMatches = true;
+                $artists = $this->getArtistsByUserId($currentUserId);
+                foreach($artists as $artist) {
+                    if (strtoupper($artist_ru) == strtoupper($artist->artist_ru) or strtoupper($artist_ru) == strtoupper($artist->artist_en)) {
+                        $noMatches = false;
+                    } elseif (strtoupper($artist_en) == strtoupper($artist->artist_ru) or strtoupper($artist_en) == strtoupper($artist->artist_en)) {
+                        $noMatches = false;
+                    } else {
+                        continue;
+                    }
+                }
+
+                if ($noMatches) {
+                    $inserted = DB::table('artists')->insert(
+                        [
+                            'artist_en' => $artist_en,
+                            'artist_ru' => $artist_ru,
+                            'user_id_fk' => $currentUserId,
+                        ]
+                    );
+
+                    if ($inserted) {
+                        $msg = 'Исполнитель добавлен.';
+                        $msgClass = 'alert-success';
+                    }
+                    else {
+                        $msg = 'Ошибка при добавлении исполнителя.';
+                        $msgClass = 'alert-danger';
+                    }
+
+                    return view('artists.add', [
+                        'title' => $title,
+                        'msg' => $msg,
+                        'msgClass' => $msgClass
+                    ]);
+                } else {
                     $msg = 'Такой исполнитель уже есть в базе';
                     $msgClass = 'alert-danger';
 
@@ -247,76 +282,105 @@ class ArtistController extends Controller
 
     public function edit(Request $request)
     {
+        if (AuthController::checkIfUserLoggedIn() === 1) {
+            $currentUserId = $_SESSION['userId'];
+        } else {
+            $_SESSION['warning'] = "You are not logged in.";
+            header('Location: /login');
+            exit();
+        }
+        if (AuthController::checkIfUserVerified() !== 1) {
+            $_SESSION['warning'] = "Email is not verified yet.";
+            header('Location: /verify-email');
+            exit();
+        }
+
         $title = "Выбор исполнителя для изменения";
 
-        if ($request->isMethod('get'))
-        {
+        if ($request->isMethod('get')) {
             $msg = '';
             $msgClass = '';
 
             return view('artists.edit', [
                 'title' => $title,
-                'artists' => $this->getArtists(),
+                'artists' => $this->getArtistsByUserId($currentUserId),
                 'msg' => $msg,
                 'msgClass' => $msgClass,
             ]);
         }
-        else if ($request->isMethod('patch'))
-        {
+        elseif ($request->isMethod('patch')) {
             $this->validate($request, [
                 'artist' => 'required',
                 'artistEditedEn' => 'required',
-                'artistEditedRu' => 'required'
+                'artistEditedRu' => 'required',
+                'userIdFromForm' => 'required',
             ]);
 
-            if (!empty($request['artist']) and !empty($request['artistEditedEn']) and !empty($request['artistEditedRu']))
-            {
+            if (!empty($request['artist']) and !empty($request['artistEditedEn']) and !empty($request['artistEditedRu']) and !empty($request['userIdFromForm'])) {
                 $artistOldId = $request['artist'];
                 $artistEditedEn = $request['artistEditedEn'];
                 $artistEditedRu = $request['artistEditedRu'];
+                $userIdFromForm = $request['userIdFromForm'];
+
+                # Если пользователь, отправивший форму, не совпадает с текущим авторизованным пользователем, прерываем выполнение.
+                if ($currentUserId != $request['userIdFromForm']) {
+                    return view('artists.edit', [
+                        'title' => $title,
+                        'artists' => $this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Вы зашли под другим пользователем.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
+
+                # Если пользователь, отправивший форму, не является владельцем исполнителя, прерываем выполнение.
+                if ($request['userIdFromForm'] != $this->getArtistOwnerIdByArtistId((int) $artistOldId)) {
+                    return view('artists.edit', [
+                        'title' => $title,
+                        'artists' => $this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Вы не владелец этого исполнителя.',
+                        'msgClass' => 'alert-danger',
+                    ]);
+                }
+
 
                 $noChanges = true;
 
                 $artistOld = $this->getArtistById($artistOldId);
-                if ( ($artistEditedEn != $artistOld->artist_en) or ($artistEditedRu != $artistOld->artist_ru) )
-                {
+                if ( ($artistEditedEn != $artistOld->artist_en) or ($artistEditedRu != $artistOld->artist_ru) ) {
                     $noChanges = false;
                 }
 
-                if ($noChanges)
-                {
-                    $msg = 'Нет изменений ни в англ., ни в рус.';
-                    $msgClass = 'alert-danger';
-
+                if ($noChanges) {
                     return view('artists.edit', [
                         'title' => $title,
-                        'artists' => $this->getArtists(),
-                        'msg' => $msg,
-                        'msgClass' => $msgClass
+                        'artists' => $this->getArtistsByUserId($currentUserId),
+                        'msg' => 'Нет изменений ни в англ., ни в рус.',
+                        'msgClass' => 'alert-danger',
                     ]);
                 }
-                else if ($noChanges == false)
-                {
+                elseif ($noChanges == false) {
                     $affectedArtistTable = DB::update
-                    ('
-                        UPDATE ARTISTS SET ARTIST_EN = ?,
-                        ARTIST_RU = ?,
-                        LAST_UPDATE = NOW()
+                    ("
+                        UPDATE ARTISTS
+                        SET
+                        artist_en = ?,
+                        artist_ru = ?,
+                        last_update = NOW(),
+                        user_id_fk = ?
                         WHERE
-                        ID = ?
-                        ',
-                        [$artistEditedEn, $artistEditedRu, $artistOldId]
+                        id = ?
+                        ",
+                        [$artistEditedEn, $artistEditedRu, $userIdFromForm, $artistOldId]
                     );
 
                     $msg = 'Исполнитель изменён. ';
                     $msg .= "Строк затронуто: $affectedArtistTable";
-                    $msgClass = 'alert-success';
 
                     return view('artists.edit', [
                         'title' => $title,
-                        'artists' => $this->getArtists(),
+                        'artists' => $this->getArtistsByUserId($currentUserId),
                         'msg' => $msg,
-                        'msgClass' => $msgClass
+                        'msgClass' => 'alert-success',
                     ]);
                 }
             }
@@ -334,7 +398,7 @@ class ArtistController extends Controller
 
             return view('artists.delete', [
                 'title' => $title,
-                'artists' => $this->getArtists(),
+                'artists' => $this->getArtistsByUserId(),
                 'msg' => $msg,
                 'msgClass' => $msgClass
             ]);
@@ -349,17 +413,17 @@ class ArtistController extends Controller
             {
                 $artist_id = $request['artist_id'];
 
-                // Смотрим, есть ли автор, которого пытаемся удалить, в таблице artists.
+                # Смотрим, есть ли автор, которого пытаемся удалить, в таблице artists.
                 $artistExists = false;
-                $artists = $this->getArtists();
+                $artists = $this->getArtistsByUserId();
                 foreach($artists as $artist)
                 {
                     if ($artist_id == $artist->id) $artistExists = true;
                     else continue;
                 }
 
-                // Получаем количество песен исполнителя.
-                // Нужно, чтобы у исполнитя, которого удаляем, не было песен.
+                # Получаем количество песен исполнителя.
+                # Нужно, чтобы у исполнитя, которого удаляем, не было песен.
                 $artistHasTracks = false;
                 $artistTracksNumber = $this->getArtistTracksNumberById($artist_id);
                 if ($artistTracksNumber >= 1)
@@ -376,14 +440,14 @@ class ArtistController extends Controller
 
                         return view('artists.delete', [
                             'title' => $title,
-                            'artists' =>$this->getArtists(),
+                            'artists' =>$this->getArtistsByUserId(),
                             'msg' => $msg,
                             'msgClass' => $msgClass
                         ]);
                     }
                     else
                     {
-                        // Возвращает количество затронутых строк.
+                        # Возвращает количество затронутых строк.
                         $deleted = DB::delete('delete from artists where id = :id', ['id' => $artist_id]);
 
                         if($deleted >= 1)
@@ -393,7 +457,7 @@ class ArtistController extends Controller
 
                             return view('artists.delete', [
                                 'title' => $title,
-                                'artists' =>$this->getArtists(),
+                                'artists' =>$this->getArtistsByUserId(),
                                 'msg' => $msg,
                                 'msgClass' => $msgClass
                             ]);
@@ -405,7 +469,7 @@ class ArtistController extends Controller
 
                             return view('artists.delete', [
                                 'title' => $title,
-                                'artists' =>$this->getArtists(),
+                                'artists' =>$this->getArtistsByUserId(),
                                 'msg' => $msg,
                                 'msgClass' => $msgClass
                             ]);
@@ -419,7 +483,7 @@ class ArtistController extends Controller
 
                     return view('artists.delete', [
                         'title' => $title,
-                        'artists' =>$this->getArtists(),
+                        'artists' =>$this->getArtistsByUserId(),
                         'msg' => $msg,
                         'msgClass' => $msgClass
                     ]);

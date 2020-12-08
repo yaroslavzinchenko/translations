@@ -38,6 +38,7 @@
                 <label for="artistEditedRu">Новое имя исполнителя (на русском)</label>
                 <input type="text" name="artistEditedRu" id="artistEditedRu" class="form-control" required>
             </div>
+            <input type="hidden" name="userIdFromForm" id="userIdFromForm" value="{{$_SESSION['userId']}}">
             <br>
             <button type="submit" name="submit" class="btn btn-primary">Изменить</button>
         </form>
