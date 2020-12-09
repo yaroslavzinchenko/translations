@@ -105,7 +105,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showArtistSongs($artistId, $artist)
+    public function showArtistSongs($username, $artistId, $artist)
     {
         $title = $artist;
         $title = str_replace('_', ' ', $title);
@@ -119,7 +119,7 @@ class ArtistController extends Controller
             $track_name_en = $artistTrack->track_name_en;
             $track_name_en = strtolower($track_name_en);
 
-            $tr = "<tr><td><a href='/tracks/" . $trackId . "/" . str_replace(' ', '_', str_replace("'", "", $track_name_en)) . "'>";
+            $tr = "<tr><td><a href='/user/{$username}/tracks/" . $trackId . "/" . str_replace(' ', '_', str_replace("'", "", $track_name_en)) . "'>";
             $tr .= "<span class='song-name'>";
             if ($artistTrack->track_name_ru)
             {
@@ -176,7 +176,7 @@ class ArtistController extends Controller
 
         return view('artists.showArtistSongs', [
             'title' => $title,
-            'trArray' => $trArray
+            'trArray' => $trArray,
         ]);
     }
 
@@ -367,7 +367,7 @@ class ArtistController extends Controller
                         SET
                         artist_en = ?,
                         artist_ru = ?,
-                        last_update = NOW(),
+                        updated_at = NOW(),
                         user_id_fk = ?
                         WHERE
                         id = ?

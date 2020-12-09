@@ -43,7 +43,7 @@ Route::get('/user/yaroslavzinchenko/tracks/34/where_the_streets_have_no_name', '
 Route::redirect('/artists', "/user/{$username}/artists");
 Route::get('/user/{username}/artists', 'ArtistController@index');
 
-Route::get('/artists/{artistId}/{artist}', 'ArtistController@showArtistSongs');
+Route::get('/user/{username}/artists/{artistId}/{artist}', 'ArtistController@showArtistSongs');
 
 
 # Edit.

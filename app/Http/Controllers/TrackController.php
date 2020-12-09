@@ -565,6 +565,8 @@ class TrackController extends Controller
 
     public function editById($trackId, Request $request)
     {
+        date_default_timezone_set("Europe/Moscow");
+
         if (AuthController::checkIfUserLoggedIn() === 1) {
             $currentUserId = $_SESSION['userId'];
             $trackOwnerId = $this->getTrackOwnerIdByTrackId((int) $trackId);
@@ -697,6 +699,7 @@ class TrackController extends Controller
                                 'lyrics' => ($lyrics == NULL ? NULL : $lyrics),
                                 'spotify_link' => ($spotify_link == NULL ? NULL : $spotify_link),
                                 'youtube_link' => ($youtube_link == NULL ? NULL : $youtube_link),
+                                'updated_at' => date('Y-m-d H:i:s'),
                             ]);
 
 
