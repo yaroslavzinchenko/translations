@@ -65,8 +65,13 @@ class ArtistController extends Controller
             ->where('id', '=', $artistId)
             ->limit(1)
             ->get();
-        $ownerId = $ownerId[0]->user_id_fk;
-        return $ownerId;
+
+        if (empty($ownerId[0])) {
+            return 0;
+        } else {
+            $ownerId = $ownerId[0]->user_id_fk;
+            return $ownerId;
+        }
     }
 
     public function index($username)
@@ -431,7 +436,7 @@ class ArtistController extends Controller
                     return view('artists.delete', [
                         'title' => $title,
                         'artists' => $this->getArtistsByUserId($currentUserId),
-                        'msg' => 'Вы не владелец этого исполнителя.',
+                        'msg' => 'Вы не владелец этого исполнителя или исполнитель отсутствует.',
                         'msgClass' => 'alert-danger',
                     ]);
                 }

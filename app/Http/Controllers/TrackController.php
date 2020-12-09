@@ -30,8 +30,13 @@ class TrackController extends Controller
             ->where('id', '=', $trackId)
             ->limit(1)
             ->get();
-        $ownerId = $ownerId[0]->user_id_fk;
-        return $ownerId;
+
+        if (empty($ownerId[0])) {
+            return 0;
+        } else {
+            $ownerId = $ownerId[0]->user_id_fk;
+            return $ownerId;
+        }
     }
 
     public function getTracksWithArtistNamesByUserId(int $userId)
@@ -438,7 +443,7 @@ class TrackController extends Controller
                     ]);
                 } else {
                     if (empty($msg)) {
-                        $msg = 'Такая запись уже есть в базе';
+                        $msg = 'Такая запись уже есть в базе.';
                     }
                     $msgClass = 'alert-danger';
 
@@ -777,7 +782,7 @@ class TrackController extends Controller
                     return view('tracks.delete', [
                         'title' => $title,
                         'tracks' => $this->getTracksWithArtistNamesByUserId($currentUserId),
-                        'msg' => 'Вы не владелец этого трека.',
+                        'msg' => 'Вы не владелец этого трека или трек отсутствует.',
                         'msgClass' => 'alert-danger',
                     ]);
                 }
