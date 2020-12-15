@@ -23,14 +23,14 @@ class ArtistController extends Controller
     public function getArtistTracksById($artistId)
     {
         $artistTracks = DB::select("
-                                SELECT * FROM TRACKS
+                                SELECT * FROM tracks
                                 WHERE
-                                ARTIST_1 = " . $artistId . "
+                                artist_1 = " . $artistId . "
                                 OR
-                                ARTIST_2 = " . $artistId . "
+                                artist_2 = " . $artistId . "
                                 OR
-                                ARTIST_3 = " . $artistId . "
-                                ORDER BY TRACK_NAME_RU
+                                artist_3 = " . $artistId . "
+                                ORDER BY track_name_ru
                                 ");
         return $artistTracks;
     }
@@ -39,22 +39,21 @@ class ArtistController extends Controller
     private function getArtistTracksNumberById($artistId)
     {
         $tracksNumber = DB::select("
-                                SELECT COUNT(*) AS TRACKS_NUMBER FROM TRACKS
+                                SELECT COUNT(*) AS tracks_number FROM tracks
                                 WHERE
-                                ARTIST_1 = " . $artistId . "
+                                artist_1 = $artistId
                                 OR
-                                ARTIST_2 = " . $artistId . "
+                                artist_2 = $artistId
                                 OR
-                                ARTIST_3 = " . $artistId . "
-                                ORDER BY TRACK_NAME_RU
+                                artist_3 = $artistId
                                 ");
 
-        return $tracksNumber[0]->TRACKS_NUMBER;
+        return $tracksNumber[0]->tracks_number;
     }
 
     public static function getArtistById($artistId)
     {
-        $artist = DB::select("SELECT * FROM ARTISTS WHERE ID = " . $artistId);
+        $artist = DB::select("SELECT * FROM artists WHERE id = " . $artistId);
         return $artist[0];
     }
 
@@ -284,6 +283,8 @@ class ArtistController extends Controller
 
     public function edit(Request $request)
     {
+        date_default_timezone_set("Europe/Moscow");
+
         if (AuthController::checkIfUserLoggedIn() === 1) {
             $currentUserId = $_SESSION['userId'];
         } else {
@@ -367,7 +368,7 @@ class ArtistController extends Controller
                         SET
                         artist_en = ?,
                         artist_ru = ?,
-                        updated_at = NOW(),
+                        updated_at = '" . date('Y-m-d H:i:s') . "',
                         user_id_fk = ?
                         WHERE
                         id = ?

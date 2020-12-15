@@ -41,7 +41,8 @@ class TrackController extends Controller
 
     public function getTracksWithArtistNamesByUserId(int $userId)
     {
-        $tracks = DB::select
+        # Старый запрос с WITH. Не работает с MySQL ниже 8 версии, поэтому написал без WITH.
+        /*$tracks = DB::select
         ("
             WITH t1 AS
             (
@@ -63,6 +64,33 @@ class TrackController extends Controller
             ON t2.ARTIST_1 = t1.artist_id
             ORDER BY track_name_ru
             ", ['user_id_fk1' => $userId, 'user_id_fk2' => $userId]
+        );*/
+
+        $tracks = DB::select
+        ("
+            SELECT
+            t.id AS id,
+            t.track_name_en,
+            t.track_name_ru,
+            t.artist_1,
+            t.artist_2,
+            t.artist_3,
+            t.lyrics,
+            t.spotify_link,
+            t.youtube_link,
+            t.user_id_fk,
+            t.add_time,
+            t.updated_at,
+            t.imageLyrics,
+            a.id AS artist_id,
+            a.artist_en,
+            a.artist_ru
+            FROM tracks t
+            INNER JOIN artists a
+            ON t.artist_1 = a.id
+            WHERE t.user_id_fk = :user_id_fk
+            ORDER BY track_name_ru
+            ", ['user_id_fk' => $userId]
         );
 
         return $tracks;
