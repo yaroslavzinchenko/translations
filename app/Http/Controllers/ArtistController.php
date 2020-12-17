@@ -283,7 +283,7 @@ class ArtistController extends Controller
 
     public function edit(Request $request)
     {
-        date_default_timezone_set("Europe/Moscow");
+        date_default_timezone_set("America/New_York");
 
         if (AuthController::checkIfUserLoggedIn() === 1) {
             $currentUserId = $_SESSION['userId'];

@@ -76,6 +76,6 @@ Route::get( '/logout', 'AuthController@logout');
 Route::match(['get', 'post'], '/signup', 'AuthController@signup');
 Route::match(['get', 'post'], '/forgot-password', 'AuthController@forgotPassword');
 Route::match(['get', 'post'], '/verify-email', 'AuthController@verifyEmail');
-
+Route::get('/check-verification-code-sent-at', 'AuthController@checkVerificationCodeSentAt');
 
 

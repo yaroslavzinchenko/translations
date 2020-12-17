@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 if (session_status() != PHP_SESSION_DISABLED and session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -112,7 +113,7 @@ class AuthController extends Controller
 
     public function signup(Request $request)
     {
-        date_default_timezone_set("Europe/Moscow");
+        date_default_timezone_set("America/New_York");
 
         if (isset($_SESSION['email']) and !empty($_SESSION['email'])) {
             header('Location: /');
@@ -162,16 +163,34 @@ class AuthController extends Controller
                             'email' => strtoupper($validatedData['email']),
                             'username' => strtoupper($validatedData['username']),
                             'password' => $encryptedPassword,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
                             'verification_code' => $verification_code,
                             'verification_code_sent_at' => date('Y-m-d H:i:s'),
                         ]
                     );
 
                     if ($insertUser) {
-                        $subject = "Email Verification Code";
-                        $message = "Your verification code is $verification_code";
+                        /*$subject = "Email Verification Code";
+                        $message = "Your verification code is $verification_code";*/
 
-                        if (mail($validatedData['email'], $subject, $message)) {
+                        /*$email = $validatedData['email'];
+                        Mail::raw("Your verification code is $verification_code", function($message, $email)
+                        {
+                            $message->from('yaroslav1998zinchenko@gmail.com');
+                            $message->to($email)
+                                ->subject('Email Verification Code.');
+                        });*/
+                        Mail::raw("Your verification code is $verification_code", function($message) use ($validatedData)
+                        {
+                            $message->from('yaroslav1998zinchenko@gmail.com');
+                            $message->to($validatedData['email'])
+                                ->subject('Email Verification Code.');
+                        });
+
+                        if (count(Mail::failures()) == 0) {
+                            # Письмо отправлено.
+
                             DB::commit();
 
                             /*session_unset();
@@ -199,8 +218,8 @@ class AuthController extends Controller
 //                            $_SESSION['password'] = $validatedData['password'];
                             header('location: /verify-email');
                             exit();
-                        }
-                        else {
+                        } else {
+                            # Письмо не отправлено.
                             DB::rollback();
                             $errors['verifyEmail'] = "Failed to send code to the user's email.";
                             return view('auth.signup', [
@@ -234,7 +253,7 @@ class AuthController extends Controller
 
     public function verifyEmail(Request $request)
     {
-        date_default_timezone_set("Europe/Moscow");
+        date_default_timezone_set("America/New_York");
 
         if ($request->isMethod('get')) {
             $errors = array();
@@ -315,6 +334,27 @@ class AuthController extends Controller
 
         if ($request->isMethod('post')) {
 
+        }
+    }
+
+    public function checkVerificationCodeSentAt(): void
+    {
+        $deleted = DB::table('users')
+            ->where('is_verified', '=', 0)
+            ->whereRaw('TIMESTAMPDIFF(minute, verification_code_sent_at, CURRENT_TIMESTAMP()) > 60')
+            ->delete();
+
+        Mail::raw("Cron job completed. Deleted rows: $deleted", function($message)
+        {
+            $message->from('yaroslav1998zinchenko@gmail.com');
+            $message->to('zin.yar@mail.ru')
+            ->subject('Cron job done.');
+        });
+
+        if (count(Mail::failures()) > 0) {
+            # Письмо не доставлено. Пишем в журнал.
+        } else {
+            # Записываем в лог, что доставка прошла успешно.
         }
     }
 }
