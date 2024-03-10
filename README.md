@@ -2,19 +2,7 @@
 
 ### Ссылки:
 
-http://song-lyrics.great-site.net/
+[http://song-lyrics.great-site.net/](http://77.232.143.11/)
 
 ### Описание
 Веб-приложение. Позволяет просматривать, добавлять, удалять и изменять музыкальные тексты.
-
-### Используемые технологии:
-
-* HTML
-* SCSS
-* PHP
-* Laravel
-* MySQL
-* JavaScript
-* jQuery
-* Github
-* Github Pages
